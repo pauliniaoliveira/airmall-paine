@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Airmall 2.0 — Relatório Executivo</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0f1117; --card: #1a1d2e; --card2: #22263a; --border: #2e3350;
+    --txt: #e2e8f0; --txt2: #94a3b8; --accent: #6366f1;
+    --grn: #22c55e; --grn-bg: #14532d; --grn-txt: #86efac;
+    --ylw: #eab308; --ylw-bg: #713f12; --ylw-txt: #fde047;
+    --red: #ef4444; --red-bg: #7f1d1d; --red-txt: #fca5a5;
+    --blu: #3b82f6; --blu-bg: #1e3a5f; --blu-txt: #93c5fd;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--txt); font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; }
+
+  /* HEADER */
+  .header { background: var(--card); border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+  .header h1 { font-size: 18px; font-weight: 700; color: var(--txt); }
+  .header .meta { font-size: 12px; color: var(--txt2); text-align: right; }
+
+  /* FILTER BAR */
+  .filterbar { background: var(--card2); border-bottom: 1px solid var(--border); padding: 10px 24px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .filterbar span { color: var(--txt2); font-size: 12px; margin-right: 4px; }
+  .filter-btn { padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--txt2); cursor: pointer; font-size: 12px; transition: all .15s; }
+  .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+
+  /* TABS */
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); background: var(--card); overflow-x: auto; padding: 0 24px; }
+  .tab { padding: 12px 18px; cursor: pointer; color: var(--txt2); font-size: 13px; border-bottom: 2px solid transparent; white-space: nowrap; transition: all .15s; }
+  .tab:hover { color: var(--txt); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+
+  /* CONTENT */
+  .content { padding: 24px; max-width: 1400px; margin: 0 auto; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* LAYER LABELS */
+  .layer { margin-bottom: 28px; }
+  .layer-label { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--txt2); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .layer-label .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-green { background: var(--grn); }
+  .dot-yellow { background: var(--ylw); }
+  .dot-red { background: var(--red); }
+
+  /* CARDS GRID */
+  .cards { display: grid; gap: 16px; }
+  .cards-4 { grid-template-columns: repeat(4, 1fr); }
+  .cards-3 { grid-template-columns: repeat(3, 1fr); }
+  .cards-2 { grid-template-columns: repeat(2, 1fr); }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
+  .card-title { font-size: 11px; color: var(--txt2); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
+  .card-val { font-size: 26px; font-weight: 700; color: var(--txt); }
+  .card-sub { font-size: 12px; color: var(--txt2); margin-top: 4px; }
+  .card-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 12px; margin-top: 6px; }
+
+  /* SEMAFORO */
+  .sem-grn { background: var(--grn-bg); color: var(--grn-txt); }
+  .sem-ylw { background: var(--ylw-bg); color: var(--ylw-txt); }
+  .sem-red { background: var(--red-bg); color: var(--red-txt); }
+  .sem-neu { background: #1e293b; color: var(--txt2); }
+
+  /* TABLE */
+  .tbl-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; }
+  th { background: var(--card2); color: var(--txt2); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  td { padding: 9px 14px; border-bottom: 1px solid var(--border); color: var(--txt); font-size: 13px; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--card2); }
+  .td-right { text-align: right; }
+  .td-center { text-align: center; }
+
+  /* COMPARISON TABLE */
+  .comp-tbl th, .comp-tbl td { padding: 11px 16px; }
+  .comp-tbl .row-label { color: var(--txt2); font-size: 12px; font-weight: 600; }
+  .comp-tbl .today-col { background: rgba(99,102,241,.08); }
+
+  /* CHART */
+  .chart-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
+  .chart-title { font-size: 13px; font-weight: 600; color: var(--txt); margin-bottom: 16px; }
+
+  /* CIA CARD */
+  .cia-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
+  .cia-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 14px; }
+  .cia-latam { border-top: 3px solid #6366f1; }
+  .cia-gol { border-top: 3px solid #f97316; }
+  .cia-azul { border-top: 3px solid #3b82f6; }
+  .cia-outros { border-top: 3px solid var(--txt2); }
+  .cia-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border); }
+  .cia-row:last-child { border: none; }
+  .cia-row label { font-size: 12px; color: var(--txt2); }
+  .cia-row .val { font-size: 13px; font-weight: 600; }
+
+  /* ALERT */
+  .alert-box { background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3); border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; font-size: 13px; }
+  .alert-box strong { color: var(--red-txt); }
+
+  /* INFO */
+  .info-box { background: rgba(99,102,241,.08); border: 1px solid rgba(99,102,241,.2); border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; font-size: 13px; color: var(--txt2); }
+
+  /* BADGE PILL */
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; }
+  .pill-grn { background: var(--grn-bg); color: var(--grn-txt); }
+  .pill-ylw { background: var(--ylw-bg); color: var(--ylw-txt); }
+  .pill-red { background: var(--red-bg); color: var(--red-txt); }
+  .pill-neu { background: #1e293b; color: var(--txt2); }
+  .pill-blu { background: var(--blu-bg); color: var(--blu-txt); }
+
+  /* CHARTS GRID */
+  .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  /* ANAC */
+  .anac-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .anac-bar .label { width: 60px; font-size: 12px; color: var(--txt2); }
+  .anac-bar .bar-track { flex: 1; height: 20px; background: var(--card2); border-radius: 4px; overflow: hidden; }
+  .anac-bar .bar-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; font-size: 11px; font-weight: 700; color: #fff; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .cards-4 { grid-template-columns: repeat(2, 1fr); }
+    .chart-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 600px) {
+    .cards-4, .cards-3, .cards-2 { grid-template-columns: 1fr; }
+    .content { padding: 16px; }
+  }
+
+  /* SORT */
+  th.sortable { cursor: pointer; user-select: none; }
+  th.sortable:hover { color: var(--txt); }
+  th.sortable::after { content: ' ↕'; opacity: .4; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>✈ Airmall 2.0 — Integridade de Vendas</h1>
+    <div style="font-size:11px;color:var(--txt2);margin-top:2px;">Monitoramento de Condições Comerciais & Otimização de Lucro</div>
+  </div>
+  <div class="meta" id="meta-info"></div>
+</div>
+
+<div class="filterbar">
+  <span>Filtrar CIA:</span>
+  <button class="filter-btn active" onclick="setCia('Todas')">Todas</button>
+  <button class="filter-btn" onclick="setCia('LATAM')">LATAM</button>
+  <button class="filter-btn" onclick="setCia('GOL')">GOL</button>
+  <button class="filter-btn" onclick="setCia('AZUL')">AZUL</button>
+  <button class="filter-btn" onclick="setCia('Outros')">Outros</button>
+</div>
+
+<div class="tabs" id="tab-bar">
+  <div class="tab active" onclick="showTab(0)">📊 Painel Executivo</div>
+  <div class="tab" onclick="showTab(1)">📅 Hoje</div>
+  <div class="tab" onclick="showTab(2)">📈 Δ Temporal</div>
+  <div class="tab" onclick="showTab(3)">🔄 Busca vs Emissão</div>
+  <div class="tab" onclick="showTab(4)">✈ Por CIA</div>
+  <div class="tab" onclick="showTab(5)">🏢 Provider & Credencial</div>
+  <div class="tab" onclick="showTab(6)">📋 Mercado ANAC</div>
+  <div class="tab" onclick="showTab(7)">👤 ADVPs</div>
+</div>
+
+<div class="content">
+
+<!-- ===== TAB 0: PAINEL EXECUTIVO ===== -->
+<div class="tab-panel active" id="panel-0">
+  <div class="layer">
+    <div class="layer-label"><span class="dot dot-green"></span>Camada 1 — KPIs Executivos: Comparativo de Períodos</div>
+    <div class="tbl-wrap">
+      <table class="comp-tbl" id="tbl-painel-kpis"></table>
+    </div>
+  </div>
+  <div class="layer">
+    <div class="layer-label"><span class="dot dot-yellow"></span>Camada 2 — Semáforo por CIA (Δ Take Rate: Especial − Público)</div>
+    <div class="tbl-wrap">
+      <table id="tbl-painel-sem"></table>
+    </div>
+  </div>
+  <div class="layer">
+    <div class="layer-label"><span class="dot dot-red"></span>Camada 3 — Alertas Críticos</div>
+    <div id="alertas-criticos"></div>
+  </div>
+</div>
+
+<!-- ===== TAB 1: HOJE ===== -->
+<div class="tab-panel" id="panel-1">
+  <div class="layer">
+    <div class="layer-label"><span class="dot dot-green"></span>Camada 1 — Resumo do Dia (vs ontem e semana anterior)</div>
+    <div class="cards cards-4" id="hoje-kpis"></div>
+  </div>
+  <div class="layer">
+    <div class="layer-label"><span class="dot dot-yellow"></span>Camada 2 — BUSCA: O que apresentamos ao cliente (por CIA × Provider)</div>
+    <div class="tbl-wrap">
+      <table id="tbl-hoje-busca"></table>
+    </div>
+  </div>
+  <div class="layer">
+    <div class="layer-label"><span class="dot dot-red"></span>Camada 3 — EMISSÃO: Como efetivamente emitimos (por CIA × Provider × Tipo)</div>
+    <div class="tbl-wrap">
+      <table id="tbl-hoje-emi"></table>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TAB 2: DELTA TEMPORAL ===== -->
+<div class="tab-panel" id="panel-2">
+  <div class="info-box">
+    ℹ️ <strong>O que monitorar:</strong> Δ Take Rate (linha laranja) deve estar <strong>acima de 0</strong> — indica que condições especiais rendem mais que as públicas. Quedas persistentes abaixo de zero sinalizam necessidade de renegociação com providers.
+  </div>
+  <div class="layer">
+    <div class="layer-label"><span class="dot dot-green"></span>Camada 1 — Tendência Geral do Período</div>
+    <div class="chart-wrap">
+      <div class="chart-title">Evolução Diária: Volume × Δ Take Rate</div>
+      <canvas id="chart-temporal" height="100"></canvas>
+    </div>
+  </div>
+  <div class="layer">
+    <div class="layer-label"><span class="dot dot-yellow"></span>Camada 2 — Evolução por Métrica</div>
+    <div class="chart-grid">
+      <div class="chart-wrap">
+        <div class="chart-title">GMV Especial (R$)</div>
+        <canvas id="chart-gmv" height="140"></canvas>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">% Emissões Especiais</div>
+        <canvas id="chart-pct" height="140"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="layer">
+    <div class="layer-label"><span class="dot dot-red"></span>Camada 3 — Tabela Diária Detalhada</div>
+    <div class="tbl-wrap">
+      <table id="tbl-temporal"></table>
+    </div>
+  </div>
+  <div style="margin-top:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;">
+    <div style="font-size:12px;font-weight:700;color:var(--txt2);text-transform:uppercase;margin-bottom:10px;">💡 Sugestões de Ação</div>
+    <div id="acoes-temporais"></div>
+  </div>
+</div>
+
+<!-- ===== TAB 3: BUSCA VS EMISSÃO ===== -->
+<div class="tab-panel" id="panel-3">
+  <div class="layer">
+    <div class="layer-label"><span class="dot dot-green"></span>Camada 1 — Visão Geral: Busca vs Emissão</div>
+    <div class="cards cards-4">
+      <div class="card">
+        <div class="card-title">Total de Emissões</div>
+        <div class="card-val" id="bvse-total"></div>
+        <div class="card-sub">Período completo</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Emissão Especial</div>
+        <div class="card-val" id="bvse-esp"></div>
+        <div class="card-sub" id="bvse-esp-pct"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">GMV Especial</div>
+        <div class="card-val" id="bvse-gmv"></div>
+        <div class="card-sub">Emissões em condição negociada</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Receita Incremental</div>
+        <div class="card-val" id="bvse-rec"></div>
+        <div class="card-sub">Ganho vs emissão pública</div>
+      </div>
+    </div>
+  </div>
+  <div class="layer">
+    <div class="layer-label"><span class="dot dot-yellow"></span>Camada 2 — Por CIA: Take Rate Público vs Especial</div>
+    <div class="tbl-wrap">
+      <table id="tbl-bvse-cia"></table>
+    </div>
+  </div>
+  <div class="layer">
+    <div class="layer-label"><span class="dot dot-red"></span>Camada 3 — Por Provider × CIA: Δ Take Rate Detalhado</div>
+    <div class="tbl-wrap">
+      <table id="tbl-bvse-prov"></table>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TAB 4: POR CIA ===== -->
+<div class="tab-panel" id="panel-4">
+  <div class="layer">
+    <div class="layer-label"><span class="dot dot-green"></span>Camada 1 — Cards por CIA</div>
+    <div class="cards cards-4" id="cia-cards"></div>
+  </div>
+  <div class="layer">
+    <div class="layer-label"><span class="dot dot-yellow"></span>Camada 2 — Gráficos Comparativos</div>
+    <div class="chart-grid">
+      <div class="chart-wrap">
+        <div class="chart-title">Take Rate por CIA (%)</div>
+        <canvas id="chart-cia-tr" height="160"></canvas>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">GMV por CIA (R$)</div>
+        <canvas id="chart-cia-gmv" height="160"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="layer">
+    <div class="layer-label"><span class="dot dot-red"></span>Camada 3 — Provider × CIA: Matriz de Δ Take Rate</div>
+    <div class="tbl-wrap">
+      <table id="tbl-cia-prov"></table>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TAB 5: PROVIDER & CREDENCIAL ===== -->
+<div class="tab-panel" id="panel-5">
+  <div class="info-box">
+    ℹ️ <strong>Leitura:</strong> Δ TR = diferença entre Take Rate da condição especial e da pública (maior = melhor). <span class="pill pill-red">PROIBIDA</span> = credencial marcada "#Nunca usar". <span class="pill pill-ylw">TESTE</span> = credencial de teste em produção. <span class="pill pill-blu">BUSCA→EMI</span> = credencial de busca usada em emissão (alerta).
+  </div>
+  <div class="layer">
+    <div class="layer-label"><span class="dot dot-green"></span>Camada 1 — Resumo por Provider</div>
+    <div class="tbl-wrap">
+      <table id="tbl-prov-resumo"></table>
+    </div>
+  </div>
+  <div class="layer">
+    <div class="layer-label"><span class="dot dot-yellow"></span>Camada 2 — Detalhe por Credencial</div>
+    <div class="tbl-wrap">
+      <table id="tbl-cred"></table>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TAB 6: MERCADO ANAC ===== -->
+<div class="tab-panel" id="panel-6">
+  <div class="layer">
+    <div class="layer-label"><span class="dot dot-green"></span>Camada 1 — Market Share ANAC 2025 vs Mix Airmall</div>
+    <div id="anac-bars"></div>
+  </div>
+  <div class="layer">
+    <div class="layer-label"><span class="dot dot-yellow"></span>Camada 2 — Penetração por CIA</div>
+    <div class="chart-wrap">
+      <div class="chart-title">Distribuição de Emissões Airmall vs Mercado</div>
+      <canvas id="chart-anac" height="80"></canvas>
+    </div>
+  </div>
+  <div class="layer">
+    <div class="layer-label"><span class="dot dot-red"></span>Camada 3 — Oportunidades Identificadas</div>
+    <div id="anac-oportunidades"></div>
+  </div>
+</div>
+
+<!-- ===== TAB 7: ADVPs ===== -->
+<div class="tab-panel" id="panel-7">
+  <div class="layer">
+    <div class="layer-label"><span class="dot dot-green"></span>Camada 1 — Top ADVPs por Volume</div>
+    <div class="chart-wrap">
+      <div class="chart-title">Top 15 ADVPs — Volume de Emissões</div>
+      <canvas id="chart-advp" height="120"></canvas>
+    </div>
+  </div>
+  <div class="layer">
+    <div class="layer-label"><span class="dot dot-yellow"></span>Camada 2 — Ranking com Semáforo</div>
+    <div class="tbl-wrap">
+      <table id="tbl-advp"></table>
+    </div>
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const D = {"meta": {"today": "2026-04-10", "same_dlw": "2026-04-03", "period_start": "2026-03-01", "period_end": "2026-04-10", "generated_at": "13/04/2026 12:20"}, "painel": {"hoje": {"total": 210, "cnt_esp": 138, "pct_esp": 65.7, "gmv": 236879.94, "receita": 33188.04, "take_rate": 6.42, "take_rate_pub": 7.72, "delta_tr": -1.3, "rec_incr": 22382.93, "incentivo_excl": 7414.23}, "sem_ant": {"total": 688, "cnt_esp": 431, "pct_esp": 62.6, "gmv": 632566.33, "receita": 82009.87, "take_rate": 5.34, "take_rate_pub": 7.58, "delta_tr": -2.24, "rec_incr": 50594.79, "incentivo_excl": 25344.65}, "media7d": {"total": 406.43, "cnt_esp": 265.14, "pct_esp": 9.31, "gmv": 390113.9, "receita": 53334.97, "take_rate": 0.86, "take_rate_pub": 1.08, "delta_tr": -0.22, "rec_incr": 34189.95, "incentivo_excl": 13408.14}, "periodo": {"total": 14143, "cnt_esp": 7842, "pct_esp": 55.4, "gmv": 11755221.59, "receita": 1505149.17, "take_rate": 7.83, "take_rate_pub": 6.82, "delta_tr": 1.01, "rec_incr": 661941.46, "incentivo_excl": 380291.74}}, "daily": [{"date": "2026-03-01", "total": 308, "pct_esp": 50.6, "gmv": 198916.47, "receita": 24961.93, "delta_tr": 2.18}, {"date": "2026-03-02", "total": 372, "pct_esp": 59.1, "gmv": 286366.38, "receita": 36125.17, "delta_tr": 0.28}, {"date": "2026-03-03", "total": 433, "pct_esp": 57.0, "gmv": 344607.58, "receita": 41429.75, "delta_tr": 2.17}, {"date": "2026-03-04", "total": 340, "pct_esp": 60.6, "gmv": 265782.45, "receita": 31293.19, "delta_tr": -0.04}, {"date": "2026-03-05", "total": 342, "pct_esp": 51.5, "gmv": 248031.17, "receita": 28157.8, "delta_tr": 1.39}, {"date": "2026-03-06", "total": 346, "pct_esp": 47.7, "gmv": 238450.7, "receita": 27451.92, "delta_tr": 2.66}, {"date": "2026-03-07", "total": 281, "pct_esp": 50.9, "gmv": 234733.69, "receita": 29207.64, "delta_tr": 2.0}, {"date": "2026-03-08", "total": 243, "pct_esp": 45.3, "gmv": 162754.3, "receita": 19111.02, "delta_tr": 2.83}, {"date": "2026-03-09", "total": 271, "pct_esp": 51.3, "gmv": 265666.2, "receita": 34272.87, "delta_tr": 1.59}, {"date": "2026-03-10", "total": 324, "pct_esp": 52.5, "gmv": 258769.37, "receita": 33611.18, "delta_tr": 2.92}, {"date": "2026-03-11", "total": 208, "pct_esp": 39.9, "gmv": 130116.36, "receita": 16739.46, "delta_tr": 1.98}, {"date": "2026-03-12", "total": 160, "pct_esp": 36.2, "gmv": 100540.06, "receita": 11885.99, "delta_tr": 3.42}, {"date": "2026-03-13", "total": 293, "pct_esp": 52.2, "gmv": 272041.95, "receita": 32448.35, "delta_tr": 1.78}, {"date": "2026-03-14", "total": 321, "pct_esp": 56.1, "gmv": 270882.74, "receita": 33514.37, "delta_tr": 2.99}, {"date": "2026-03-15", "total": 368, "pct_esp": 53.3, "gmv": 277808.4, "receita": 34520.7, "delta_tr": 2.53}, {"date": "2026-03-16", "total": 351, "pct_esp": 53.6, "gmv": 238276.42, "receita": 28763.27, "delta_tr": 1.49}, {"date": "2026-03-17", "total": 307, "pct_esp": 57.0, "gmv": 306433.37, "receita": 37759.87, "delta_tr": 2.6}, {"date": "2026-03-18", "total": 320, "pct_esp": 60.6, "gmv": 316248.46, "receita": 39694.57, "delta_tr": 1.15}, {"date": "2026-03-19", "total": 271, "pct_esp": 63.1, "gmv": 286160.62, "receita": 37169.98, "delta_tr": 1.9}, {"date": "2026-03-20", "total": 193, "pct_esp": 58.0, "gmv": 210637.09, "receita": 26104.52, "delta_tr": 1.85}, {"date": "2026-03-21", "total": 233, "pct_esp": 57.5, "gmv": 200698.63, "receita": 25045.51, "delta_tr": 1.42}, {"date": "2026-03-22", "total": 174, "pct_esp": 54.6, "gmv": 143266.25, "receita": 18174.81, "delta_tr": 2.15}, {"date": "2026-03-23", "total": 261, "pct_esp": 62.1, "gmv": 281388.26, "receita": 36163.23, "delta_tr": 1.23}, {"date": "2026-03-24", "total": 337, "pct_esp": 55.8, "gmv": 301255.68, "receita": 38779.64, "delta_tr": 1.65}, {"date": "2026-03-25", "total": 324, "pct_esp": 58.3, "gmv": 276334.99, "receita": 34618.09, "delta_tr": 1.59}, {"date": "2026-03-26", "total": 297, "pct_esp": 57.9, "gmv": 297792.42, "receita": 35393.88, "delta_tr": 2.01}, {"date": "2026-03-27", "total": 280, "pct_esp": 53.2, "gmv": 240586.34, "receita": 29729.73, "delta_tr": 1.56}, {"date": "2026-03-28", "total": 308, "pct_esp": 59.4, "gmv": 253997.58, "receita": 32043.4, "delta_tr": -0.27}, {"date": "2026-03-29", "total": 250, "pct_esp": 50.4, "gmv": 189662.68, "receita": 24395.66, "delta_tr": 1.49}, {"date": "2026-03-30", "total": 334, "pct_esp": 59.0, "gmv": 279975.2, "receita": 35401.28, "delta_tr": 3.51}, {"date": "2026-03-31", "total": 613, "pct_esp": 24.3, "gmv": 200488.28, "receita": 24432.94, "delta_tr": 3.27}, {"date": "2026-04-01", "total": 615, "pct_esp": 32.0, "gmv": 264323.14, "receita": 39824.64, "delta_tr": 3.92}, {"date": "2026-04-02", "total": 532, "pct_esp": 69.9, "gmv": 548864.71, "receita": 71568.16, "delta_tr": -3.37}, {"date": "2026-04-03", "total": 688, "pct_esp": 62.6, "gmv": 632566.33, "receita": 82009.87, "delta_tr": -2.24}, {"date": "2026-04-04", "total": 514, "pct_esp": 63.8, "gmv": 434974.01, "receita": 57892.02, "delta_tr": -1.26}, {"date": "2026-04-05", "total": 456, "pct_esp": 62.7, "gmv": 390659.91, "receita": 51967.55, "delta_tr": -2.74}, {"date": "2026-04-06", "total": 410, "pct_esp": 64.6, "gmv": 379935.49, "receita": 50999.82, "delta_tr": -1.86}, {"date": "2026-04-07", "total": 498, "pct_esp": 66.1, "gmv": 484738.97, "receita": 64957.66, "delta_tr": -2.2}, {"date": "2026-04-08", "total": 419, "pct_esp": 67.5, "gmv": 422957.3, "receita": 62924.7, "delta_tr": -0.4}, {"date": "2026-04-09", "total": 338, "pct_esp": 67.2, "gmv": 380651.7, "receita": 51414.99, "delta_tr": -0.74}, {"date": "2026-04-10", "total": 210, "pct_esp": 65.7, "gmv": 236879.94, "receita": 33188.04, "delta_tr": -1.3}], "por_cia": {"LATAM": {"total": 3610, "cnt_esp": 2054, "pct_esp": 56.9, "gmv": 3216345.23, "receita": 454249.92, "take_rate": 9.09, "take_rate_pub": 6.88, "delta_tr": 2.21, "rec_incr": 243841.92, "incentivo_excl": 167537.25}, "GOL": {"total": 3896, "cnt_esp": 2296, "pct_esp": 58.9, "gmv": 3363256.29, "receita": 451156.45, "take_rate": 8.2, "take_rate_pub": 6.93, "delta_tr": 1.27, "rec_incr": 252103.75, "incentivo_excl": 129357.91}, "AZUL": {"total": 6343, "cnt_esp": 3457, "pct_esp": 54.5, "gmv": 5027779.68, "receita": 594411.06, "take_rate": 6.9, "take_rate_pub": 7.16, "delta_tr": -0.26, "rec_incr": 220059.16, "incentivo_excl": 83396.58}, "Outros": {"total": 294, "cnt_esp": 35, "pct_esp": 11.9, "gmv": 147840.39, "receita": 5331.74, "take_rate": 1.02, "take_rate_pub": 1.91, "delta_tr": -0.89, "rec_incr": -54063.37, "incentivo_excl": 0.0}}, "bvse_cia": [{"cia": "LATAM", "total": 3610, "pct_esp": 56.9, "gmv_esp": 3216345.23, "tr_pub": 6.88, "tr_esp": 9.09, "delta_tr": 2.21}, {"cia": "GOL", "total": 3896, "pct_esp": 58.9, "gmv_esp": 3363256.29, "tr_pub": 6.93, "tr_esp": 8.2, "delta_tr": 1.27}, {"cia": "AZUL", "total": 6343, "pct_esp": 54.5, "gmv_esp": 5027779.68, "tr_pub": 7.16, "tr_esp": 6.9, "delta_tr": -0.26}, {"cia": "Outros", "total": 294, "pct_esp": 11.9, "gmv_esp": 147840.39, "tr_pub": 1.91, "tr_esp": 1.02, "delta_tr": -0.89}], "prov_cia": [{"provider": "cturis", "LATAM_cnt": 25, "LATAM_pct_esp": 84.0, "LATAM_delta_tr": 1.18, "GOL_cnt": 5, "GOL_pct_esp": 100.0, "GOL_delta_tr": null, "AZUL_cnt": 1171, "AZUL_pct_esp": 62.4, "AZUL_delta_tr": 0.29, "Outros_cnt": 47, "Outros_pct_esp": 0.0, "Outros_delta_tr": null}, {"provider": "evtur", "LATAM_cnt": 0, "LATAM_pct_esp": 0, "LATAM_delta_tr": null, "GOL_cnt": 2, "GOL_pct_esp": 100.0, "GOL_delta_tr": null, "AZUL_cnt": 0, "AZUL_pct_esp": 0, "AZUL_delta_tr": null, "Outros_cnt": 0, "Outros_pct_esp": 0, "Outros_delta_tr": null}, {"provider": "flytour", "LATAM_cnt": 197, "LATAM_pct_esp": 86.8, "LATAM_delta_tr": 1.6, "GOL_cnt": 560, "GOL_pct_esp": 97.7, "GOL_delta_tr": 3.22, "AZUL_cnt": 435, "AZUL_pct_esp": 90.8, "AZUL_delta_tr": 2.13, "Outros_cnt": 136, "Outros_pct_esp": 0.0, "Outros_delta_tr": null}, {"provider": "patria", "LATAM_cnt": 2527, "LATAM_pct_esp": 59.8, "LATAM_delta_tr": 2.2, "GOL_cnt": 1836, "GOL_pct_esp": 27.3, "GOL_delta_tr": 2.34, "AZUL_cnt": 2533, "AZUL_pct_esp": 35.6, "AZUL_delta_tr": -0.64, "Outros_cnt": 9, "Outros_pct_esp": 100.0, "Outros_delta_tr": null}, {"provider": "rextur", "LATAM_cnt": 21, "LATAM_pct_esp": 0.0, "LATAM_delta_tr": null, "GOL_cnt": 0, "GOL_pct_esp": 0, "GOL_delta_tr": null, "AZUL_cnt": 24, "AZUL_pct_esp": 95.8, "AZUL_delta_tr": 2.72, "Outros_cnt": 102, "Outros_pct_esp": 25.5, "Outros_delta_tr": -5.82}, {"provider": "sakura", "LATAM_cnt": 840, "LATAM_pct_esp": 41.7, "LATAM_delta_tr": 0.85, "GOL_cnt": 1493, "GOL_pct_esp": 83.1, "GOL_delta_tr": -0.63, "AZUL_cnt": 2180, "AZUL_pct_esp": 64.5, "AZUL_delta_tr": -1.07, "Outros_cnt": 0, "Outros_pct_esp": 0, "Outros_delta_tr": null}], "hoje_busca": [{"cia": "LATAM", "provider": "patria", "qtd": 17, "pct_cia": 81.0, "tr": 7.62}, {"cia": "LATAM", "provider": "sakura", "qtd": 4, "pct_cia": 19.0, "tr": 8.63}, {"cia": "GOL", "provider": "flytour", "qtd": 1, "pct_cia": 7.1, "tr": 3.82}, {"cia": "GOL", "provider": "patria", "qtd": 11, "pct_cia": 78.6, "tr": 7.55}, {"cia": "GOL", "provider": "sakura", "qtd": 2, "pct_cia": 14.3, "tr": 8.12}, {"cia": "AZUL", "provider": "patria", "qtd": 27, "pct_cia": 79.4, "tr": 7.96}, {"cia": "AZUL", "provider": "sakura", "qtd": 7, "pct_cia": 20.6, "tr": 8.23}, {"cia": "Outros", "provider": "cturis", "qtd": 1, "pct_cia": 33.3, "tr": 1.27}, {"cia": "Outros", "provider": "rextur", "qtd": 2, "pct_cia": 66.7, "tr": 7.39}], "hoje_emi": [{"cia": "LATAM", "provider": "patria", "tipo": "ESPECIAL", "qtd": 15, "pct_cia": 34.1, "tr": 6.68}, {"cia": "LATAM", "provider": "patria", "tipo": "PÚBLICA", "qtd": 17, "pct_cia": 38.6, "tr": 7.62}, {"cia": "LATAM", "provider": "sakura", "tipo": "ESPECIAL", "qtd": 8, "pct_cia": 18.2, "tr": 9.48}, {"cia": "LATAM", "provider": "sakura", "tipo": "PÚBLICA", "qtd": 4, "pct_cia": 9.1, "tr": 8.63}, {"cia": "GOL", "provider": "flytour", "tipo": "PÚBLICA", "qtd": 1, "pct_cia": 2.0, "tr": 3.82}, {"cia": "GOL", "provider": "patria", "tipo": "ESPECIAL", "qtd": 1, "pct_cia": 2.0, "tr": 5.19}, {"cia": "GOL", "provider": "patria", "tipo": "PÚBLICA", "qtd": 11, "pct_cia": 22.0, "tr": 7.55}, {"cia": "GOL", "provider": "sakura", "tipo": "ESPECIAL", "qtd": 35, "pct_cia": 70.0, "tr": 7.2}, {"cia": "GOL", "provider": "sakura", "tipo": "PÚBLICA", "qtd": 2, "pct_cia": 4.0, "tr": 8.12}, {"cia": "AZUL", "provider": "cturis", "tipo": "ESPECIAL", "qtd": 18, "pct_cia": 15.9, "tr": 12.18}, {"cia": "AZUL", "provider": "patria", "tipo": "ESPECIAL", "qtd": 12, "pct_cia": 10.6, "tr": 4.1}, {"cia": "AZUL", "provider": "patria", "tipo": "PÚBLICA", "qtd": 27, "pct_cia": 23.9, "tr": 7.96}, {"cia": "AZUL", "provider": "sakura", "tipo": "ESPECIAL", "qtd": 49, "pct_cia": 43.4, "tr": 3.76}, {"cia": "AZUL", "provider": "sakura", "tipo": "PÚBLICA", "qtd": 7, "pct_cia": 6.2, "tr": 8.23}, {"cia": "Outros", "provider": "cturis", "tipo": "PÚBLICA", "qtd": 1, "pct_cia": 33.3, "tr": 1.27}, {"cia": "Outros", "provider": "rextur", "tipo": "PÚBLICA", "qtd": 2, "pct_cia": 66.7, "tr": 7.39}], "cred_data": [{"provider": "cturis", "credential": "CTuris Busca (maxmilhas.wcf)", "tipo": "BUSCA", "total": 491, "pct_esp": 0.0, "delta_tr": null, "alerta": false}, {"provider": "cturis", "credential": "CTuris Cotação (maxmilhas.wcf)", "tipo": "COTAÇÃO", "total": 690, "pct_esp": 100.0, "delta_tr": null, "alerta": false}, {"provider": "cturis", "credential": "Wooba test Cturis Provider", "tipo": "TESTE", "total": 67, "pct_esp": 100.0, "delta_tr": null, "alerta": true}, {"provider": "evtur", "credential": "Evtur Cotação (609d24680c9b264c3063f977)", "tipo": "COTAÇÃO", "total": 2, "pct_esp": 100.0, "delta_tr": null, "alerta": false}, {"provider": "flytour", "credential": "Flytour Busca emissão faturado (max.site)", "tipo": "BUSCA", "total": 10, "pct_esp": 100.0, "delta_tr": null, "alerta": true}, {"provider": "flytour", "credential": "Flytour busca (max.site) #Nunca usar na cotação", "tipo": "PROIBIDA", "total": 215, "pct_esp": 0.0, "delta_tr": null, "alerta": true}, {"provider": "flytour", "credential": "Flytour cotação especial (max.flyespecial)", "tipo": "COTAÇÃO", "total": 887, "pct_esp": 100.0, "delta_tr": null, "alerta": false}, {"provider": "flytour", "credential": "Flytour cotação especial faturado", "tipo": "COTAÇÃO", "total": 216, "pct_esp": 100.0, "delta_tr": null, "alerta": false}, {"provider": "patria", "credential": "Patria - Cotação", "tipo": "COTAÇÃO", "total": 2922, "pct_esp": 100.0, "delta_tr": null, "alerta": false}, {"provider": "patria", "credential": "Patria Busca - MAX", "tipo": "BUSCA", "total": 3945, "pct_esp": 0.0, "delta_tr": null, "alerta": false}, {"provider": "patria", "credential": "Patria Busca - MAX - apimaxpatria", "tipo": "BUSCA", "total": 38, "pct_esp": 5.3, "delta_tr": -6.6, "alerta": true}, {"provider": "rextur", "credential": "Rextur busca (116437) #Nunca usar na cotação", "tipo": "PROIBIDA", "total": 147, "pct_esp": 33.3, "delta_tr": -2.66, "alerta": true}, {"provider": "sakura", "credential": "Sakura - Cotação", "tipo": "COTAÇÃO", "total": 2997, "pct_esp": 100.0, "delta_tr": null, "alerta": false}, {"provider": "sakura", "credential": "Sakura - Novo Servidor", "tipo": "OUTRO", "total": 1516, "pct_esp": 0.0, "delta_tr": null, "alerta": false}], "advp_data": [{"advp": "1", "total": 667, "pct_esp": 63.6, "gmv": 1667685.65, "delta_tr": 0.0}, {"advp": "10", "total": 370, "pct_esp": 61.9, "gmv": 538099.91, "delta_tr": 0.51}, {"advp": "2", "total": 361, "pct_esp": 59.3, "gmv": 801153.54, "delta_tr": 1.41}, {"advp": "0", "total": 355, "pct_esp": 60.8, "gmv": 919370.83, "delta_tr": 0.63}, {"advp": "7", "total": 338, "pct_esp": 57.4, "gmv": 577995.58, "delta_tr": -0.45}, {"advp": "4", "total": 337, "pct_esp": 54.9, "gmv": 656871.7, "delta_tr": 1.59}, {"advp": "28", "total": 330, "pct_esp": 54.2, "gmv": 356665.11, "delta_tr": 2.35}, {"advp": "14", "total": 301, "pct_esp": 55.5, "gmv": 467027.17, "delta_tr": 1.08}, {"advp": "21", "total": 290, "pct_esp": 54.5, "gmv": 408539.92, "delta_tr": -0.7}, {"advp": "29", "total": 280, "pct_esp": 53.6, "gmv": 348814.43, "delta_tr": 3.51}, {"advp": "5", "total": 268, "pct_esp": 59.7, "gmv": 527060.0, "delta_tr": -1.18}, {"advp": "30", "total": 258, "pct_esp": 61.6, "gmv": 291256.56, "delta_tr": -0.34}, {"advp": "8", "total": 236, "pct_esp": 61.0, "gmv": 419899.55, "delta_tr": 2.65}, {"advp": "3", "total": 234, "pct_esp": 60.7, "gmv": 551425.24, "delta_tr": 1.61}, {"advp": "31", "total": 231, "pct_esp": 49.8, "gmv": 275323.46, "delta_tr": 1.12}, {"advp": "22", "total": 223, "pct_esp": 54.7, "gmv": 284372.3, "delta_tr": 1.57}, {"advp": "6", "total": 215, "pct_esp": 54.4, "gmv": 420809.62, "delta_tr": 1.54}, {"advp": "15", "total": 214, "pct_esp": 60.3, "gmv": 306641.22, "delta_tr": 1.93}, {"advp": "23", "total": 208, "pct_esp": 53.4, "gmv": 281152.95, "delta_tr": 1.98}, {"advp": "11", "total": 204, "pct_esp": 57.4, "gmv": 322621.04, "delta_tr": 1.08}, {"advp": "12", "total": 200, "pct_esp": 55.0, "gmv": 290731.09, "delta_tr": 1.39}, {"advp": "24", "total": 194, "pct_esp": 55.7, "gmv": 330841.74, "delta_tr": 3.3}, {"advp": "9", "total": 189, "pct_esp": 61.4, "gmv": 356052.95, "delta_tr": -0.04}, {"advp": "16", "total": 188, "pct_esp": 56.9, "gmv": 255285.66, "delta_tr": -0.76}, {"advp": "26", "total": 188, "pct_esp": 47.3, "gmv": 256120.7, "delta_tr": 1.85}, {"advp": "25", "total": 186, "pct_esp": 50.0, "gmv": 269923.74, "delta_tr": 2.22}, {"advp": "18", "total": 183, "pct_esp": 57.9, "gmv": 270773.44, "delta_tr": -0.51}, {"advp": "32", "total": 181, "pct_esp": 49.2, "gmv": 210257.42, "delta_tr": -0.54}, {"advp": "19", "total": 169, "pct_esp": 52.7, "gmv": 213055.53, "delta_tr": 0.18}, {"advp": "17", "total": 165, "pct_esp": 55.8, "gmv": 210759.58, "delta_tr": 1.03}, {"advp": "20", "total": 165, "pct_esp": 53.9, "gmv": 250732.93, "delta_tr": 2.15}, {"advp": "33", "total": 159, "pct_esp": 56.0, "gmv": 171815.86, "delta_tr": 1.63}, {"advp": "13", "total": 157, "pct_esp": 54.1, "gmv": 261116.82, "delta_tr": -0.9}, {"advp": "35", "total": 151, "pct_esp": 55.0, "gmv": 168665.81, "delta_tr": 1.05}, {"advp": "34", "total": 141, "pct_esp": 63.8, "gmv": 208854.75, "delta_tr": 1.26}, {"advp": "27", "total": 137, "pct_esp": 46.7, "gmv": 191782.09, "delta_tr": -1.28}, {"advp": "42", "total": 136, "pct_esp": 58.1, "gmv": 148251.26, "delta_tr": 1.47}, {"advp": "38", "total": 133, "pct_esp": 60.9, "gmv": 147446.34, "delta_tr": -0.69}, {"advp": "36", "total": 130, "pct_esp": 50.0, "gmv": 160908.47, "delta_tr": 3.13}, {"advp": "43", "total": 130, "pct_esp": 47.7, "gmv": 182701.32, "delta_tr": 0.28}, {"advp": "40", "total": 117, "pct_esp": 60.7, "gmv": 139477.0, "delta_tr": -1.0}, {"advp": "37", "total": 109, "pct_esp": 56.0, "gmv": 122772.74, "delta_tr": 0.24}, {"advp": "39", "total": 104, "pct_esp": 58.7, "gmv": 119939.55, "delta_tr": 2.97}, {"advp": "41", "total": 102, "pct_esp": 57.8, "gmv": 129003.45, "delta_tr": 2.12}, {"advp": "45", "total": 97, "pct_esp": 54.6, "gmv": 117413.63, "delta_tr": 3.17}, {"advp": "60", "total": 96, "pct_esp": 52.1, "gmv": 110941.67, "delta_tr": -0.48}, {"advp": "44", "total": 93, "pct_esp": 58.1, "gmv": 125460.59, "delta_tr": 0.24}, {"advp": "48", "total": 92, "pct_esp": 56.5, "gmv": 101755.9, "delta_tr": 0.02}, {"advp": "47", "total": 90, "pct_esp": 52.2, "gmv": 133577.45, "delta_tr": 1.99}, {"advp": "46", "total": 86, "pct_esp": 48.8, "gmv": 110217.67, "delta_tr": 1.3}], "cias": ["LATAM", "GOL", "AZUL", "Outros"]};
+
+// ============================================================
+// HELPERS
+// ============================================================
+let currentCia = 'Todas';
+let charts = {};
+
+const fmtBRL = v => v == null ? '—' : 'R$ ' + v.toLocaleString('pt-BR', {minimumFractionDigits:0, maximumFractionDigits:0});
+const fmtPct = v => v == null ? '—' : v.toFixed(1) + '%';
+const fmtNum = v => v == null ? '—' : v.toLocaleString('pt-BR');
+const fmtPP = v => v == null ? '—' : (v >= 0 ? '+' : '') + v.toFixed(2) + ' pp';
+
+function semClass(v) {
+  if (v == null) return 'sem-neu';
+  if (v >= 2) return 'sem-grn';
+  if (v >= 0) return 'sem-ylw';
+  return 'sem-red';
+}
+function semPill(v, label) {
+  const cls = semClass(v);
+  return `<span class="pill ${cls.replace('sem-','pill-').replace('grn','grn').replace('ylw','ylw').replace('red','red').replace('neu','neu')}">${label || fmtPP(v)}</span>`;
+}
+function pill(txt, cls) { return `<span class="pill pill-${cls}">${txt}</span>`; }
+
+function destroyChart(id) {
+  if (charts[id]) { charts[id].destroy(); delete charts[id]; }
+}
+
+function ciaColor(cia) {
+  return {LATAM:'#6366f1', GOL:'#f97316', AZUL:'#3b82f6', Outros:'#94a3b8'}[cia] || '#94a3b8';
+}
+
+// ============================================================
+// FILTER
+// ============================================================
+function setCia(cia) {
+  currentCia = cia;
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent === cia);
+  });
+  renderAll();
+}
+
+// ============================================================
+// TAB
+// ============================================================
+function showTab(i) {
+  document.querySelectorAll('.tab').forEach((t,j) => t.classList.toggle('active', j===i));
+  document.querySelectorAll('.tab-panel').forEach((p,j) => p.classList.toggle('active', j===i));
+}
+
+// ============================================================
+// RENDER META
+// ============================================================
+function renderMeta() {
+  const m = D.meta;
+  document.getElementById('meta-info').innerHTML =
+    `Período: ${m.period_start} → ${m.period_end}<br>Hoje: ${m.today} | Gerado: ${m.generated_at}`;
+}
+
+// ============================================================
+// PAINEL EXECUTIVO
+// ============================================================
+function renderPainel() {
+  const p = D.painel;
+  const rows = [
+    ['Emissões (total)', p.hoje.total, p.sem_ant.total, Math.round(p.media7d.total), p.periodo.total, 'int'],
+    ['% Especial', p.hoje.pct_esp, p.sem_ant.pct_esp, null, p.periodo.pct_esp, 'pct'],
+    ['GMV Especial', p.hoje.gmv, p.sem_ant.gmv, p.media7d.gmv, p.periodo.gmv, 'brl'],
+    ['Receita Especial', p.hoje.receita, p.sem_ant.receita, p.media7d.receita, p.periodo.receita, 'brl'],
+    ['Take Rate Médio (Esp)', p.hoje.take_rate, p.sem_ant.take_rate, null, p.periodo.take_rate, 'pct'],
+    ['Take Rate Médio (Pub)', p.hoje.take_rate_pub, p.sem_ant.take_rate_pub, null, p.periodo.take_rate_pub, 'pct'],
+    ['Δ Take Rate (Esp−Pub)', p.hoje.delta_tr, p.sem_ant.delta_tr, null, p.periodo.delta_tr, 'pp'],
+    ['Receita Incremental', p.hoje.rec_incr, p.sem_ant.rec_incr, p.media7d.rec_incr, p.periodo.rec_incr, 'brl'],
+    ['Incentivo Exclusivo', p.hoje.incentivo_excl, p.sem_ant.incentivo_excl, p.media7d.incentivo_excl, p.periodo.incentivo_excl, 'brl'],
+  ];
+
+  const fmt = (v, type) => {
+    if (v == null) return '—';
+    if (type === 'brl') return fmtBRL(v);
+    if (type === 'pct') return fmtPct(v);
+    if (type === 'pp') return fmtPP(v);
+    if (type === 'int') return fmtNum(Math.round(v));
+    return v;
+  };
+
+  let html = `<thead><tr>
+    <th>Métrica</th>
+    <th class="today-col td-right">📅 Hoje<br><small style="font-weight:400;font-size:10px">${D.meta.today}</small></th>
+    <th class="td-right">Sem. Anterior<br><small style="font-weight:400;font-size:10px">${D.meta.same_dlw}</small></th>
+    <th class="td-right">Méd. 7 Dias</th>
+    <th class="td-right">Período Total</th>
+  </tr></thead><tbody>`;
+
+  for (const [label, hoje, semAnt, med7, periodo, type] of rows) {
+    const isSem = type === 'pp';
+    const cell = (v) => isSem
+      ? `<span class="${semClass(v)}" style="padding:3px 8px;border-radius:6px;font-size:13px;font-weight:600;">${fmt(v,type)}</span>`
+      : fmt(v, type);
+    html += `<tr>
+      <td class="row-label">${label}</td>
+      <td class="td-right today-col">${cell(hoje)}</td>
+      <td class="td-right">${cell(semAnt)}</td>
+      <td class="td-right">${med7 != null ? cell(med7) : '<span style="color:var(--txt2)">—</span>'}</td>
+      <td class="td-right">${cell(periodo)}</td>
+    </tr>`;
+  }
+  html += '</tbody>';
+  document.getElementById('tbl-painel-kpis').innerHTML = html;
+
+  // Semáforo por CIA
+  const cias = D.cias.filter(c => currentCia === 'Todas' || c === currentCia);
+  let sh = `<thead><tr><th>CIA</th><th class="td-right">Emissões</th><th class="td-right">% Especial</th><th class="td-right">TR Público</th><th class="td-right">TR Especial</th><th class="td-center">Δ Take Rate</th><th class="td-right">Rec. Incremental</th></tr></thead><tbody>`;
+  for (const cia of cias) {
+    const c = D.por_cia[cia];
+    sh += `<tr>
+      <td><strong>${cia}</strong></td>
+      <td class="td-right">${fmtNum(c.total)}</td>
+      <td class="td-right">${fmtPct(c.pct_esp)}</td>
+      <td class="td-right">${fmtPct(c.take_rate_pub)}</td>
+      <td class="td-right">${fmtPct(c.take_rate)}</td>
+      <td class="td-center"><span class="${semClass(c.delta_tr)}" style="padding:3px 10px;border-radius:6px;font-weight:700;">${fmtPP(c.delta_tr)}</span></td>
+      <td class="td-right">${fmtBRL(c.rec_incr)}</td>
+    </tr>`;
+  }
+  sh += '</tbody>';
+  document.getElementById('tbl-painel-sem').innerHTML = sh;
+
+  // Alertas
+  const alertas = [];
+  D.cred_data.filter(c => c.alerta).forEach(c => {
+    if (c.tipo === 'PROIBIDA' && c.pct_esp > 0) alertas.push(`🚨 <strong>${c.provider} / ${c.credential}</strong> — credencial PROIBIDA usada em ${c.pct_esp}% das emissões`);
+    if (c.tipo === 'TESTE') alertas.push(`⚠️ <strong>${c.provider} / ${c.credential}</strong> — credencial de TESTE em produção (${c.total} emissões)`);
+    if (c.tipo === 'BUSCA' && c.pct_esp > 0) alertas.push(`⚠️ <strong>${c.provider} / ${c.credential}</strong> — credencial de BUSCA usada em emissão especial`);
+  });
+  D.por_cia && Object.entries(D.por_cia).forEach(([cia, c]) => {
+    if (c.delta_tr !== null && c.delta_tr < 0) alertas.push(`📉 <strong>${cia}</strong> — Δ Take Rate negativo (${fmtPP(c.delta_tr)}): condição especial PIOR que pública. Renegociar com providers!`);
+  });
+
+  const alertBox = document.getElementById('alertas-criticos');
+  if (alertas.length) {
+    alertBox.innerHTML = alertas.map(a => `<div class="alert-box">${a}</div>`).join('');
+  } else {
+    alertBox.innerHTML = `<div class="info-box">✅ Nenhum alerta crítico no período.</div>`;
+  }
+}
+
+// ============================================================
+// HOJE
+// ============================================================
+function renderHoje() {
+  const h = D.painel.hoje;
+  const s = D.painel.sem_ant;
+  const kpiData = [
+    {title:'Emissões', val: fmtNum(h.total), sub: `Sem. ant.: ${fmtNum(s.total)}`},
+    {title:'% Especial', val: fmtPct(h.pct_esp), sub: `Sem. ant.: ${fmtPct(s.pct_esp)}`},
+    {title:'GMV Especial', val: fmtBRL(h.gmv), sub: `Sem. ant.: ${fmtBRL(s.gmv)}`},
+    {title:'Δ Take Rate', val: fmtPP(h.delta_tr), sub: `Sem. ant.: ${fmtPP(s.delta_tr)}`, sem: h.delta_tr},
+  ];
+  document.getElementById('hoje-kpis').innerHTML = kpiData.map(k => `
+    <div class="card">
+      <div class="card-title">${k.title}</div>
+      <div class="card-val" ${k.sem!=null ? `style="color:${k.sem>=2?'#22c55e':k.sem>=0?'#eab308':'#ef4444'}"` : ''}>${k.val}</div>
+      <div class="card-sub">${k.sub}</div>
+    </div>`).join('');
+
+  // Busca table
+  const bRows = D.hoje_busca.filter(r => currentCia === 'Todas' || r.cia === currentCia);
+  let lastCia = null;
+  let bHtml = `<thead><tr><th>CIA</th><th>Provider</th><th class="td-right">Qtd Busca</th><th class="td-right">% na CIA</th><th class="td-right">TR Médio</th></tr></thead><tbody>`;
+  bRows.forEach(r => {
+    const isNew = r.cia !== lastCia;
+    if (isNew) lastCia = r.cia;
+    bHtml += `<tr style="${isNew?'border-top:2px solid var(--border)':''}">
+      <td>${isNew ? `<strong>${r.cia}</strong>` : ''}</td>
+      <td>${r.provider}</td>
+      <td class="td-right">${fmtNum(r.qtd)}</td>
+      <td class="td-right">${fmtPct(r.pct_cia)}</td>
+      <td class="td-right">${fmtPct(r.tr)}</td>
+    </tr>`;
+  });
+  bHtml += '</tbody>';
+  document.getElementById('tbl-hoje-busca').innerHTML = bHtml;
+
+  // Emissão table
+  const eRows = D.hoje_emi.filter(r => currentCia === 'Todas' || r.cia === currentCia);
+  let lastCia2 = null, lastProv = null;
+  let eHtml = `<thead><tr><th>CIA</th><th>Provider</th><th>Tipo</th><th class="td-right">Qtd</th><th class="td-right">% na CIA</th><th class="td-right">TR Médio</th></tr></thead><tbody>`;
+  eRows.forEach(r => {
+    const isNewCia = r.cia !== lastCia2;
+    const isNewProv = r.provider !== lastProv || isNewCia;
+    if (isNewCia) lastCia2 = r.cia;
+    if (isNewProv) lastProv = r.provider;
+    const tipoPill = r.tipo === 'ESPECIAL' ? pill('ESPECIAL','grn') : pill('PÚBLICA','neu');
+    eHtml += `<tr style="${isNewCia?'border-top:2px solid var(--border)':''}">
+      <td>${isNewCia ? `<strong>${r.cia}</strong>` : ''}</td>
+      <td>${isNewProv ? r.provider : ''}</td>
+      <td>${tipoPill}</td>
+      <td class="td-right">${fmtNum(r.qtd)}</td>
+      <td class="td-right">${fmtPct(r.pct_cia)}</td>
+      <td class="td-right">${fmtPct(r.tr)}</td>
+    </tr>`;
+  });
+  eHtml += '</tbody>';
+  document.getElementById('tbl-hoje-emi').innerHTML = eHtml;
+}
+
+// ============================================================
+// DELTA TEMPORAL
+// ============================================================
+function renderTemporal() {
+  const daily = D.daily;
+  const labels = daily.map(d => d.date.slice(5));
+  const colors = daily.map(d => d.delta_tr == null ? '#94a3b8' : d.delta_tr >= 2 ? '#22c55e' : d.delta_tr >= 0 ? '#eab308' : '#ef4444');
+
+  destroyChart('temporal');
+  const ctx = document.getElementById('chart-temporal').getContext('2d');
+  charts['temporal'] = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Emissões', data: daily.map(d => d.total), backgroundColor: 'rgba(99,102,241,0.3)', yAxisID: 'y' },
+        { label: 'Δ Take Rate (pp)', data: daily.map(d => d.delta_tr), borderColor: '#f97316', backgroundColor: colors, type: 'line', yAxisID: 'y2', tension: 0.3, pointRadius: 3 },
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { labels: { color: '#94a3b8' } } },
+      scales: {
+        y: { ticks: { color: '#94a3b8' }, grid: { color: '#2e3350' } },
+        y2: { position: 'right', ticks: { color: '#f97316' }, grid: { drawOnChartArea: false } },
+        x: { ticks: { color: '#94a3b8', maxRotation: 45 }, grid: { color: '#2e3350' } }
+      }
+    }
+  });
+
+  destroyChart('gmv');
+  charts['gmv'] = new Chart(document.getElementById('chart-gmv').getContext('2d'), {
+    type: 'line',
+    data: { labels, datasets: [{ label:'GMV Esp (R$)', data: daily.map(d=>d.gmv), borderColor:'#6366f1', backgroundColor:'rgba(99,102,241,0.1)', fill:true, tension:0.3 }] },
+    options: { responsive:true, plugins:{ legend:{labels:{color:'#94a3b8'}} }, scales:{ y:{ticks:{color:'#94a3b8'},grid:{color:'#2e3350'}}, x:{ticks:{color:'#94a3b8',maxRotation:45},grid:{color:'#2e3350'}} } }
+  });
+
+  destroyChart('pct');
+  charts['pct'] = new Chart(document.getElementById('chart-pct').getContext('2d'), {
+    type: 'line',
+    data: { labels, datasets: [{ label:'% Especial', data: daily.map(d=>d.pct_esp), borderColor:'#22c55e', backgroundColor:'rgba(34,197,94,0.1)', fill:true, tension:0.3 }] },
+    options: { responsive:true, plugins:{ legend:{labels:{color:'#94a3b8'}} }, scales:{ y:{ticks:{color:'#94a3b8'},grid:{color:'#2e3350'}}, x:{ticks:{color:'#94a3b8',maxRotation:45},grid:{color:'#2e3350'}} } }
+  });
+
+  // Tabela diária
+  let tHtml = `<thead><tr><th>Data</th><th class="td-right">Emissões</th><th class="td-right">% Especial</th><th class="td-right">GMV Esp</th><th class="td-right">Receita</th><th class="td-center">Δ TR</th></tr></thead><tbody>`;
+  daily.forEach(d => {
+    tHtml += `<tr>
+      <td>${d.date}</td>
+      <td class="td-right">${fmtNum(d.total)}</td>
+      <td class="td-right">${fmtPct(d.pct_esp)}</td>
+      <td class="td-right">${fmtBRL(d.gmv)}</td>
+      <td class="td-right">${fmtBRL(d.receita)}</td>
+      <td class="td-center"><span class="${semClass(d.delta_tr)}" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">${fmtPP(d.delta_tr)}</span></td>
+    </tr>`;
+  });
+  tHtml += '</tbody>';
+  document.getElementById('tbl-temporal').innerHTML = tHtml;
+
+  // Sugestões de ação
+  const negDays = daily.filter(d => d.delta_tr < 0).length;
+  const recentNeg = daily.slice(-7).filter(d => d.delta_tr < 0).length;
+  const acoes = [];
+  if (recentNeg >= 4) acoes.push('🔴 <strong>Renegociação urgente:</strong> Δ TR negativo em ' + recentNeg + ' dos últimos 7 dias — condições especiais piorando sistematicamente. Convocar reunião com providers prioritários.');
+  if (D.por_cia.AZUL && D.por_cia.AZUL.delta_tr < 0) acoes.push('🔴 <strong>AZUL:</strong> Revisar contratos com Pátria e Sakura para voos Azul — condição especial inferior à pública.');
+  acoes.push('📋 <strong>Monitorar robot:</strong> Dias com % especial > 70% podem indicar sobreposição inadequada de condições cotação.');
+  acoes.push('💡 <strong>Oportunidade Flytour/GOL:</strong> Δ TR de +3,22 pp — expandir share nesta combinação via ajuste de prioridade de exibição.');
+
+  document.getElementById('acoes-temporais').innerHTML = acoes.map(a => `<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;">${a}</div>`).join('');
+}
+
+// ============================================================
+// BUSCA VS EMISSÃO
+// ============================================================
+function renderBVSE() {
+  const p = D.painel.periodo;
+  document.getElementById('bvse-total').textContent = fmtNum(p.total);
+  document.getElementById('bvse-esp').textContent = fmtNum(p.cnt_esp);
+  document.getElementById('bvse-esp-pct').textContent = fmtPct(p.pct_esp) + ' das emissões';
+  document.getElementById('bvse-gmv').textContent = fmtBRL(p.gmv);
+  document.getElementById('bvse-rec').textContent = fmtBRL(p.rec_incr);
+
+  // Por CIA
+  const rows = D.bvse_cia.filter(r => currentCia === 'Todas' || r.cia === currentCia);
+  let html = `<thead><tr><th>CIA</th><th class="td-right">Total</th><th class="td-right">% Especial</th><th class="td-right">TR Público</th><th class="td-right">TR Especial</th><th class="td-center">Δ TR</th><th class="td-right">GMV Esp</th></tr></thead><tbody>`;
+  rows.forEach(r => {
+    html += `<tr>
+      <td><strong>${r.cia}</strong></td>
+      <td class="td-right">${fmtNum(r.total)}</td>
+      <td class="td-right">${fmtPct(r.pct_esp)}</td>
+      <td class="td-right">${fmtPct(r.tr_pub)}</td>
+      <td class="td-right">${fmtPct(r.tr_esp)}</td>
+      <td class="td-center"><span class="${semClass(r.delta_tr)}" style="padding:3px 10px;border-radius:6px;font-weight:700;">${fmtPP(r.delta_tr)}</span></td>
+      <td class="td-right">${fmtBRL(r.gmv_esp)}</td>
+    </tr>`;
+  });
+  html += '</tbody>';
+  document.getElementById('tbl-bvse-cia').innerHTML = html;
+
+  // Provider × CIA
+  const cias = D.cias.filter(c => currentCia === 'Todas' || c === currentCia);
+  let ph = `<thead><tr><th>Provider</th>`;
+  cias.forEach(c => ph += `<th class="td-right">${c} Qtd</th><th class="td-right">${c} %Esp</th><th class="td-center">${c} ΔTR</th>`);
+  ph += `</tr></thead><tbody>`;
+  D.prov_cia.forEach(r => {
+    ph += `<tr><td><strong>${r.provider}</strong></td>`;
+    cias.forEach(c => {
+      const cnt = r[c+'_cnt'] || 0;
+      const pct = r[c+'_pct_esp'];
+      const dt = r[c+'_delta_tr'];
+      ph += `<td class="td-right">${cnt > 0 ? fmtNum(cnt) : '—'}</td>`;
+      ph += `<td class="td-right">${cnt > 0 ? fmtPct(pct) : '—'}</td>`;
+      ph += `<td class="td-center">${cnt > 0 && dt != null ? `<span class="${semClass(dt)}" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">${fmtPP(dt)}</span>` : '—'}</td>`;
+    });
+    ph += '</tr>';
+  });
+  ph += '</tbody>';
+  document.getElementById('tbl-bvse-prov').innerHTML = ph;
+}
+
+// ============================================================
+// POR CIA
+// ============================================================
+function renderPorCia() {
+  const cias = D.cias.filter(c => currentCia === 'Todas' || c === currentCia);
+  const ciaClass = {LATAM:'cia-latam', GOL:'cia-gol', AZUL:'cia-azul', Outros:'cia-outros'};
+
+  document.getElementById('cia-cards').innerHTML = cias.map(cia => {
+    const c = D.por_cia[cia];
+    const dtr = c.delta_tr;
+    const semCls = semClass(dtr);
+    return `<div class="cia-card ${ciaClass[cia] || ''}">
+      <h3>${cia}</h3>
+      <div class="cia-row"><label>Emissões</label><span class="val">${fmtNum(c.total)}</span></div>
+      <div class="cia-row"><label>% Especial</label><span class="val">${fmtPct(c.pct_esp)}</span></div>
+      <div class="cia-row"><label>GMV Especial</label><span class="val">${fmtBRL(c.gmv)}</span></div>
+      <div class="cia-row"><label>Take Rate Médio</label><span class="val">${fmtPct(c.take_rate)}</span></div>
+      <div class="cia-row"><label>TR Público</label><span class="val">${fmtPct(c.take_rate_pub)}</span></div>
+      <div class="cia-row"><label>Δ Take Rate</label><span class="val ${semCls}" style="padding:2px 8px;border-radius:6px;">${fmtPP(dtr)}</span></div>
+      <div class="cia-row"><label>Receita Incremental</label><span class="val">${fmtBRL(c.rec_incr)}</span></div>
+    </div>`;
+  }).join('');
+
+  // Charts
+  destroyChart('cia-tr');
+  destroyChart('cia-gmv');
+  const ciaLabels = cias;
+  charts['cia-tr'] = new Chart(document.getElementById('chart-cia-tr').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: ciaLabels,
+      datasets: [
+        { label: 'TR Público', data: cias.map(c => D.por_cia[c].take_rate_pub), backgroundColor: '#4b5563' },
+        { label: 'TR Especial', data: cias.map(c => D.por_cia[c].take_rate), backgroundColor: cias.map(c => ciaColor(c)) },
+      ]
+    },
+    options: { responsive:true, plugins:{legend:{labels:{color:'#94a3b8'}}}, scales:{ y:{ticks:{color:'#94a3b8'},grid:{color:'#2e3350'}}, x:{ticks:{color:'#94a3b8'},grid:{color:'#2e3350'}} } }
+  });
+  charts['cia-gmv'] = new Chart(document.getElementById('chart-cia-gmv').getContext('2d'), {
+    type: 'doughnut',
+    data: { labels: ciaLabels, datasets: [{ data: cias.map(c => D.por_cia[c].gmv), backgroundColor: cias.map(c => ciaColor(c)) }] },
+    options: { responsive:true, plugins:{ legend:{labels:{color:'#94a3b8'}}, tooltip:{ callbacks:{ label: ctx => fmtBRL(ctx.raw) } } } }
+  });
+
+  // Matrix
+  const matCias = D.cias.filter(c => currentCia === 'Todas' || c === currentCia);
+  let mh = `<thead><tr><th>Provider</th>`;
+  matCias.forEach(c => mh += `<th class="td-center" colspan="3">${c}</th>`);
+  mh += `</tr><tr><th></th>`;
+  matCias.forEach(() => mh += `<th class="td-right">Qtd</th><th class="td-right">%Esp</th><th class="td-center">Δ TR</th>`);
+  mh += `</tr></thead><tbody>`;
+  D.prov_cia.forEach(r => {
+    mh += `<tr><td><strong>${r.provider}</strong></td>`;
+    matCias.forEach(c => {
+      const cnt = r[c+'_cnt'] || 0;
+      const pct = r[c+'_pct_esp'];
+      const dt = r[c+'_delta_tr'];
+      mh += `<td class="td-right">${cnt > 0 ? fmtNum(cnt) : '—'}</td>`;
+      mh += `<td class="td-right">${cnt > 0 ? fmtPct(pct) : '—'}</td>`;
+      mh += `<td class="td-center">${dt != null ? `<span class="${semClass(dt)}" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">${fmtPP(dt)}</span>` : '—'}</td>`;
+    });
+    mh += '</tr>';
+  });
+  mh += '</tbody>';
+  document.getElementById('tbl-cia-prov').innerHTML = mh;
+}
+
+// ============================================================
+// PROVIDER & CREDENCIAL
+// ============================================================
+function renderProv() {
+  // Resumo por provider
+  const provs = [...new Set(D.cred_data.map(c => c.provider))];
+  let ph = `<thead><tr><th>Provider</th><th class="td-right">Total Emissões</th><th class="td-right">Credenciais</th><th class="td-right">Alertas</th><th class="td-center">Status</th></tr></thead><tbody>`;
+  provs.forEach(prov => {
+    const creds = D.cred_data.filter(c => c.provider === prov);
+    const total = creds.reduce((s,c) => s+c.total, 0);
+    const alertas = creds.filter(c => c.alerta).length;
+    const status = alertas > 0 ? `<span class="pill pill-red">⚠ ${alertas} alerta(s)</span>` : `<span class="pill pill-grn">✓ OK</span>`;
+    ph += `<tr><td><strong>${prov}</strong></td><td class="td-right">${fmtNum(total)}</td><td class="td-right">${creds.length}</td><td class="td-right">${alertas}</td><td class="td-center">${status}</td></tr>`;
+  });
+  ph += '</tbody>';
+  document.getElementById('tbl-prov-resumo').innerHTML = ph;
+
+  // Credenciais
+  let ch = `<thead><tr><th>Provider</th><th>Credencial</th><th class="td-center">Tipo</th><th class="td-right">Emissões</th><th class="td-right">% Especial</th><th class="td-center">Δ TR</th><th class="td-center">Alerta</th></tr></thead><tbody>`;
+  D.cred_data.forEach(c => {
+    const tipoPill = {
+      'PROIBIDA': pill('PROIBIDA','red'),
+      'TESTE': pill('TESTE','ylw'),
+      'BUSCA': c.pct_esp > 0 ? pill('BUSCA→EMI','blu') : pill('BUSCA','neu'),
+      'COTAÇÃO': pill('COTAÇÃO','grn'),
+    }[c.tipo] || pill(c.tipo, 'neu');
+
+    const alertIcon = c.alerta ? '🚨' : '';
+    ch += `<tr style="${c.alerta?'background:rgba(239,68,68,.05)':''}">
+      <td>${c.provider}</td>
+      <td style="font-size:12px;">${c.credential}</td>
+      <td class="td-center">${tipoPill}</td>
+      <td class="td-right">${fmtNum(c.total)}</td>
+      <td class="td-right">${fmtPct(c.pct_esp)}</td>
+      <td class="td-center">${c.delta_tr != null ? `<span class="${semClass(c.delta_tr)}" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">${fmtPP(c.delta_tr)}</span>` : '—'}</td>
+      <td class="td-center">${alertIcon}</td>
+    </tr>`;
+  });
+  ch += '</tbody>';
+  document.getElementById('tbl-cred').innerHTML = ch;
+}
+
+// ============================================================
+// MERCADO ANAC
+// ============================================================
+function renderANAC() {
+  const anac = {LATAM: 38.6, GOL: 31.4, AZUL: 29.8, Outros: 0.2};
+  const total = D.painel.periodo.total;
+  const airmall = {
+    LATAM: Math.round(D.por_cia.LATAM.total / total * 100),
+    GOL: Math.round(D.por_cia.GOL.total / total * 100),
+    AZUL: Math.round(D.por_cia.AZUL.total / total * 100),
+    Outros: Math.round(D.por_cia.Outros.total / total * 100),
+  };
+
+  const barsDiv = document.getElementById('anac-bars');
+  barsDiv.innerHTML = `
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+    <div>
+      <div style="font-size:12px;color:var(--txt2);margin-bottom:12px;font-weight:600;">ANAC 2025 — Mercado Doméstico</div>
+      ${['LATAM','GOL','AZUL'].map(c => `
+        <div class="anac-bar">
+          <div class="label">${c}</div>
+          <div class="bar-track"><div class="bar-fill" style="width:${anac[c]}%;background:${ciaColor(c)}">${anac[c]}%</div></div>
+        </div>`).join('')}
+    </div>
+    <div>
+      <div style="font-size:12px;color:var(--txt2);margin-bottom:12px;font-weight:600;">Airmall — Mix de Emissões</div>
+      ${['LATAM','GOL','AZUL','Outros'].map(c => `
+        <div class="anac-bar">
+          <div class="label">${c}</div>
+          <div class="bar-track"><div class="bar-fill" style="width:${airmall[c]}%;background:${ciaColor(c)}">${airmall[c]}%</div></div>
+        </div>`).join('')}
+    </div>
+  </div>`;
+
+  // Chart comparativo
+  destroyChart('anac');
+  const cias = ['LATAM','GOL','AZUL'];
+  charts['anac'] = new Chart(document.getElementById('chart-anac').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: cias,
+      datasets: [
+        { label: 'ANAC 2025 (%)', data: cias.map(c => anac[c]), backgroundColor: 'rgba(148,163,184,0.4)' },
+        { label: 'Airmall Mix (%)', data: cias.map(c => airmall[c]), backgroundColor: cias.map(c => ciaColor(c)) },
+      ]
+    },
+    options: { responsive:true, plugins:{legend:{labels:{color:'#94a3b8'}}}, scales:{ y:{ticks:{color:'#94a3b8'},grid:{color:'#2e3350'}}, x:{ticks:{color:'#94a3b8'},grid:{color:'#2e3350'}} } }
+  });
+
+  // Oportunidades
+  const opps = [];
+  cias.forEach(c => {
+    const diff = airmall[c] - anac[c];
+    if (diff < -5) opps.push(`<div style="padding:8px;background:rgba(99,102,241,.08);border-radius:8px;margin-bottom:8px;font-size:13px;">
+      💡 <strong>${c}</strong> — Airmall tem ${airmall[c]}% vs ${anac[c]}% do mercado (ANAC). Gap de ${Math.abs(diff)} pp indica oportunidade de crescimento nesta CIA.
+    </div>`);
+    if (diff > 5) opps.push(`<div style="padding:8px;background:rgba(34,197,94,.08);border-radius:8px;margin-bottom:8px;font-size:13px;">
+      📈 <strong>${c}</strong> — Airmall está ${diff} pp acima do share de mercado. Boa penetração — manter condições comerciais atrativas.
+    </div>`);
+  });
+  if (!opps.length) opps.push('<div class="info-box">Mix de emissões alinhado com o mercado ANAC.</div>');
+  document.getElementById('anac-oportunidades').innerHTML = opps.join('');
+}
+
+// ============================================================
+// ADVPs
+// ============================================================
+function renderADVP() {
+  const data = D.advp_data;
+  const top15 = data.slice(0,15);
+
+  destroyChart('advp');
+  charts['advp'] = new Chart(document.getElementById('chart-advp').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: top15.map(d => 'ADVP ' + d.advp),
+      datasets: [
+        { label: 'Emissões', data: top15.map(d => d.total), backgroundColor: top15.map(d => d.delta_tr >= 2 ? '#22c55e' : d.delta_tr >= 0 ? '#eab308' : '#ef4444') }
+      ]
+    },
+    options: { indexAxis:'y', responsive:true, plugins:{legend:{display:false}}, scales:{ x:{ticks:{color:'#94a3b8'},grid:{color:'#2e3350'}}, y:{ticks:{color:'#94a3b8'},grid:{color:'#2e3350'}} } }
+  });
+
+  let ah = `<thead><tr><th>ADVP</th><th class="td-right">Emissões</th><th class="td-right">% Especial</th><th class="td-right">GMV</th><th class="td-center">Δ TR</th></tr></thead><tbody>`;
+  data.forEach(r => {
+    ah += `<tr>
+      <td>ADVP ${r.advp}</td>
+      <td class="td-right">${fmtNum(r.total)}</td>
+      <td class="td-right">${fmtPct(r.pct_esp)}</td>
+      <td class="td-right">${fmtBRL(r.gmv)}</td>
+      <td class="td-center"><span class="${semClass(r.delta_tr)}" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">${fmtPP(r.delta_tr)}</span></td>
+    </tr>`;
+  });
+  ah += '</tbody>';
+  document.getElementById('tbl-advp').innerHTML = ah;
+}
+
+// ============================================================
+// RENDER ALL
+// ============================================================
+function renderAll() {
+  renderMeta();
+  renderPainel();
+  renderHoje();
+  renderTemporal();
+  renderBVSE();
+  renderPorCia();
+  renderProv();
+  renderANAC();
+  renderADVP();
+}
+
+renderAll();
+</script>
+</body>
+</html>
