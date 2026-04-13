@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
+<!-- saved from url=(0112)https://tess-workflows-files.storage.googleapis.com/4b6b30603ce49b64d2797a0f527259e8cfdace4b/index_template.html -->
+<html lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Airmall 2.0 — Relatório Executivo</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="./index_files/chart.umd.min.js"></script>
 <style>
   :root {
     --bg: #0f1117; --card: #1a1d2e; --card2: #22263a; --border: #2e3350;
@@ -134,25 +134,95 @@
   th.sortable { cursor: pointer; user-select: none; }
   th.sortable:hover { color: var(--txt); }
   th.sortable::after { content: ' ↕'; opacity: .4; }
+
+  /* ── Date Filter Bar ─────────────────────────────────────── */
+  .date-filterbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 20px;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .date-filterbar span { color: var(--txt2); font-size: 13px; font-weight: 600; white-space:nowrap; }
+  .date-filterbar label { color: var(--txt2); font-size: 12px; }
+  .date-filterbar input[type="date"] {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--txt);
+    padding: 5px 10px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .date-filterbar input[type="date"]:focus { outline: none; border-color: var(--accent); }
+  .date-btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--txt2);
+    padding: 5px 11px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .date-btn:hover { background: rgba(99,102,241,0.15); color: var(--txt); }
+  .date-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .date-badge {
+    font-size: 11px;
+    color: var(--txt2);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 3px 8px;
+    white-space: nowrap;
+  }
+  .date-notice {
+    font-size: 11px;
+    color: #eab308;
+    background: rgba(234,179,8,0.08);
+    border: 1px solid rgba(234,179,8,0.25);
+    border-radius: 4px;
+    padding: 3px 9px;
+    white-space: nowrap;
+  }
+
 </style>
-</head>
+<meta id="acfifjfajpekbmhmjppnmmjgmhjkildl"></head>
 <body>
 
 <div class="header">
   <div>
     <h1>✈ Airmall 2.0 — Integridade de Vendas</h1>
-    <div style="font-size:11px;color:var(--txt2);margin-top:2px;">Monitoramento de Condições Comerciais & Otimização de Lucro</div>
+    <div style="font-size:11px;color:var(--txt2);margin-top:2px;">Monitoramento de Condições Comerciais &amp; Otimização de Lucro</div>
   </div>
-  <div class="meta" id="meta-info"></div>
+  <div class="meta" id="meta-info">Período: 2026-01-01 → 2026-04-13<br>Hoje: 2026-04-13 | Gerado: 13/04/2026 15:04</div>
 </div>
 
 <div class="filterbar">
   <span>Filtrar CIA:</span>
-  <button class="filter-btn active" onclick="setCia('Todas')">Todas</button>
-  <button class="filter-btn" onclick="setCia('LATAM')">LATAM</button>
-  <button class="filter-btn" onclick="setCia('GOL')">GOL</button>
-  <button class="filter-btn" onclick="setCia('AZUL')">AZUL</button>
-  <button class="filter-btn" onclick="setCia('Outros')">Outros</button>
+  <button class="filter-btn active" onclick="setCia(&#39;Todas&#39;)">Todas</button>
+  <button class="filter-btn" onclick="setCia(&#39;LATAM&#39;)">LATAM</button>
+  <button class="filter-btn" onclick="setCia(&#39;GOL&#39;)">GOL</button>
+  <button class="filter-btn" onclick="setCia(&#39;AZUL&#39;)">AZUL</button>
+  <button class="filter-btn" onclick="setCia(&#39;Outros&#39;)">Outros</button>
+
+<div class="date-filterbar" id="date-filterbar">
+  <span>📅 Período:</span>
+  <label>De:</label>
+  <input type="date" id="date-from" onchange="applyDateFilter()" min="2026-01-01" max="2026-04-13">
+  <label>Até:</label>
+  <input type="date" id="date-to" onchange="applyDateFilter()" min="2026-01-01" max="2026-04-13">
+  <button class="date-btn active" id="btn-all" onclick="setDatePreset(&#39;all&#39;)">Todo período</button>
+  <button class="date-btn" id="btn-7d" onclick="setDatePreset(&#39;7d&#39;)">Últ. 7 dias</button>
+  <button class="date-btn" id="btn-14d" onclick="setDatePreset(&#39;14d&#39;)">Últ. 14 dias</button>
+  <button class="date-btn" id="btn-30d" onclick="setDatePreset(&#39;30d&#39;)">Últ. 30 dias</button>
+  <button class="date-btn" id="btn-mes" onclick="setDatePreset(&#39;mes&#39;)">Mês atual</button>
+  <span class="date-badge" id="date-badge">2026-01-01 → 2026-04-13 | 36.927 emissões</span>
+  <span class="date-notice">⚡ Painel Executivo e Hoje sempre mostram dados reais (não filtrados)</span>
+</div>
 </div>
 
 <div class="tabs" id="tab-bar">
@@ -161,7 +231,7 @@
   <div class="tab" onclick="showTab(2)">📈 Δ Temporal</div>
   <div class="tab" onclick="showTab(3)">🔄 Busca vs Emissão</div>
   <div class="tab" onclick="showTab(4)">✈ Por CIA</div>
-  <div class="tab" onclick="showTab(5)">🏢 Provider & Credencial</div>
+  <div class="tab" onclick="showTab(5)">🏢 Provider &amp; Credencial</div>
   <div class="tab" onclick="showTab(6)">📋 Mercado ANAC</div>
   <div class="tab" onclick="showTab(7)">👤 ADVPs</div>
 </div>
@@ -173,18 +243,110 @@
   <div class="layer">
     <div class="layer-label"><span class="dot dot-green"></span>Camada 1 — KPIs Executivos: Comparativo de Períodos</div>
     <div class="tbl-wrap">
-      <table class="comp-tbl" id="tbl-painel-kpis"></table>
+      <table class="comp-tbl" id="tbl-painel-kpis"><thead><tr>
+    <th>Métrica</th>
+    <th class="today-col td-right">📅 Hoje<br><small style="font-weight:400;font-size:10px">2026-04-13</small></th>
+    <th class="td-right">Sem. Anterior<br><small style="font-weight:400;font-size:10px">2026-04-06</small></th>
+    <th class="td-right">Méd. 7 Dias</th>
+    <th class="td-right">Período Total</th>
+  </tr></thead><tbody><tr>
+      <td class="row-label">Emissões (total)</td>
+      <td class="td-right today-col">128</td>
+      <td class="td-right">408</td>
+      <td class="td-right">367</td>
+      <td class="td-right">36.927</td>
+    </tr><tr>
+      <td class="row-label">% Especial</td>
+      <td class="td-right today-col">70.3%</td>
+      <td class="td-right">64.7%</td>
+      <td class="td-right"><span style="color:var(--txt2)">—</span></td>
+      <td class="td-right">58.6%</td>
+    </tr><tr>
+      <td class="row-label">GMV Especial</td>
+      <td class="td-right today-col">R$ 169.994</td>
+      <td class="td-right">R$ 377.310</td>
+      <td class="td-right">R$ 388.603</td>
+      <td class="td-right">R$ 32.644.153</td>
+    </tr><tr>
+      <td class="row-label">Receita Especial</td>
+      <td class="td-right today-col">R$ 27.251</td>
+      <td class="td-right">R$ 50.632</td>
+      <td class="td-right">R$ 56.014</td>
+      <td class="td-right">R$ 4.128.949</td>
+    </tr><tr>
+      <td class="row-label">Take Rate Médio (Esp)</td>
+      <td class="td-right today-col">7.8%</td>
+      <td class="td-right">5.7%</td>
+      <td class="td-right"><span style="color:var(--txt2)">—</span></td>
+      <td class="td-right">8.3%</td>
+    </tr><tr>
+      <td class="row-label">Take Rate Médio (Pub)</td>
+      <td class="td-right today-col">8.6%</td>
+      <td class="td-right">7.3%</td>
+      <td class="td-right"><span style="color:var(--txt2)">—</span></td>
+      <td class="td-right">7.3%</td>
+    </tr><tr>
+      <td class="row-label">Δ Take Rate (Esp−Pub)</td>
+      <td class="td-right today-col"><span class="sem-red" style="padding:3px 8px;border-radius:6px;font-size:13px;font-weight:600;">-0.84 pp</span></td>
+      <td class="td-right"><span class="sem-red" style="padding:3px 8px;border-radius:6px;font-size:13px;font-weight:600;">-1.63 pp</span></td>
+      <td class="td-right"><span style="color:var(--txt2)">—</span></td>
+      <td class="td-right"><span class="sem-ylw" style="padding:3px 8px;border-radius:6px;font-size:13px;font-weight:600;">+1.08 pp</span></td>
+    </tr><tr>
+      <td class="row-label">Receita Incremental</td>
+      <td class="td-right today-col">R$ 22.065</td>
+      <td class="td-right">R$ 30.661</td>
+      <td class="td-right">R$ 38.230</td>
+      <td class="td-right">R$ 2.116.150</td>
+    </tr><tr>
+      <td class="row-label">Incentivo Exclusivo</td>
+      <td class="td-right today-col">R$ 5.699</td>
+      <td class="td-right">R$ 12.244</td>
+      <td class="td-right">R$ 12.866</td>
+      <td class="td-right">R$ 1.023.322</td>
+    </tr></tbody></table>
     </div>
   </div>
   <div class="layer">
     <div class="layer-label"><span class="dot dot-yellow"></span>Camada 2 — Semáforo por CIA (Δ Take Rate: Especial − Público)</div>
     <div class="tbl-wrap">
-      <table id="tbl-painel-sem"></table>
+      <table id="tbl-painel-sem"><thead><tr><th>CIA</th><th class="td-right">Emissões</th><th class="td-right">% Especial</th><th class="td-right">TR Público</th><th class="td-right">TR Especial</th><th class="td-center">Δ Take Rate</th><th class="td-right">Rec. Incremental</th></tr></thead><tbody><tr>
+      <td><strong>LATAM</strong></td>
+      <td class="td-right">9.197</td>
+      <td class="td-right">59.9%</td>
+      <td class="td-right">7.3%</td>
+      <td class="td-right">9.0%</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:3px 10px;border-radius:6px;font-weight:700;">+1.72 pp</span></td>
+      <td class="td-right">R$ 761.717</td>
+    </tr><tr>
+      <td><strong>GOL</strong></td>
+      <td class="td-right">9.432</td>
+      <td class="td-right">61.4%</td>
+      <td class="td-right">7.4%</td>
+      <td class="td-right">8.8%</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:3px 10px;border-radius:6px;font-weight:700;">+1.41 pp</span></td>
+      <td class="td-right">R$ 669.084</td>
+    </tr><tr>
+      <td><strong>AZUL</strong></td>
+      <td class="td-right">17.410</td>
+      <td class="td-right">58.7%</td>
+      <td class="td-right">7.6%</td>
+      <td class="td-right">7.8%</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:3px 10px;border-radius:6px;font-weight:700;">+0.16 pp</span></td>
+      <td class="td-right">R$ 820.183</td>
+    </tr><tr>
+      <td><strong>Outros</strong></td>
+      <td class="td-right">888</td>
+      <td class="td-right">11.8%</td>
+      <td class="td-right">3.3%</td>
+      <td class="td-right">4.0%</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:3px 10px;border-radius:6px;font-weight:700;">+0.67 pp</span></td>
+      <td class="td-right">R$ -134.834</td>
+    </tr></tbody></table>
     </div>
   </div>
   <div class="layer">
     <div class="layer-label"><span class="dot dot-red"></span>Camada 3 — Alertas Críticos</div>
-    <div id="alertas-criticos"></div>
+    <div id="alertas-criticos"><div class="alert-box">⚠️ <strong>cturis / Wooba test Cturis Provider</strong> — credencial de TESTE em produção (80 emissões)</div><div class="alert-box">⚠️ <strong>flytour / Flytour Busca emissÃ£o faturado (max.site)</strong> — credencial de BUSCA usada em emissão especial</div><div class="alert-box">⚠️ <strong>patria / Patria Busca - MAX - apimaxpatria</strong> — credencial de BUSCA usada em emissão especial</div><div class="alert-box">🚨 <strong>rextur / Rextur busca (116437) #Nunca usar na cotaÃ§Ã£o</strong> — credencial PROIBIDA usada em 35.2% das emissões</div></div>
   </div>
 </div>
 
@@ -192,18 +354,152 @@
 <div class="tab-panel" id="panel-1">
   <div class="layer">
     <div class="layer-label"><span class="dot dot-green"></span>Camada 1 — Resumo do Dia (vs ontem e semana anterior)</div>
-    <div class="cards cards-4" id="hoje-kpis"></div>
+    <div class="cards cards-4" id="hoje-kpis">
+    <div class="card">
+      <div class="card-title">Emissões</div>
+      <div class="card-val">128</div>
+      <div class="card-sub">Sem. ant.: 408</div>
+    </div>
+    <div class="card">
+      <div class="card-title">% Especial</div>
+      <div class="card-val">70.3%</div>
+      <div class="card-sub">Sem. ant.: 64.7%</div>
+    </div>
+    <div class="card">
+      <div class="card-title">GMV Especial</div>
+      <div class="card-val">R$ 169.994</div>
+      <div class="card-sub">Sem. ant.: R$ 377.310</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Δ Take Rate</div>
+      <div class="card-val" style="color:#ef4444">-0.84 pp</div>
+      <div class="card-sub">Sem. ant.: -1.63 pp</div>
+    </div></div>
   </div>
   <div class="layer">
     <div class="layer-label"><span class="dot dot-yellow"></span>Camada 2 — BUSCA: O que apresentamos ao cliente (por CIA × Provider)</div>
     <div class="tbl-wrap">
-      <table id="tbl-hoje-busca"></table>
+      <table id="tbl-hoje-busca"><thead><tr><th>CIA</th><th>Provider</th><th class="td-right">Qtd Busca</th><th class="td-right">% na CIA</th><th class="td-right">TR Médio</th></tr></thead><tbody><tr style="border-top:2px solid var(--border)">
+      <td><strong>LATAM</strong></td>
+      <td>patria</td>
+      <td class="td-right">11</td>
+      <td class="td-right">91.7%</td>
+      <td class="td-right">9.8%</td>
+    </tr><tr style="">
+      <td></td>
+      <td>sakura</td>
+      <td class="td-right">1</td>
+      <td class="td-right">8.3%</td>
+      <td class="td-right">8.4%</td>
+    </tr><tr style="border-top:2px solid var(--border)">
+      <td><strong>GOL</strong></td>
+      <td>patria</td>
+      <td class="td-right">10</td>
+      <td class="td-right">100.0%</td>
+      <td class="td-right">8.2%</td>
+    </tr><tr style="border-top:2px solid var(--border)">
+      <td><strong>AZUL</strong></td>
+      <td>patria</td>
+      <td class="td-right">11</td>
+      <td class="td-right">68.8%</td>
+      <td class="td-right">8.0%</td>
+    </tr><tr style="">
+      <td></td>
+      <td>sakura</td>
+      <td class="td-right">5</td>
+      <td class="td-right">31.2%</td>
+      <td class="td-right">8.1%</td>
+    </tr></tbody></table>
     </div>
   </div>
   <div class="layer">
     <div class="layer-label"><span class="dot dot-red"></span>Camada 3 — EMISSÃO: Como efetivamente emitimos (por CIA × Provider × Tipo)</div>
     <div class="tbl-wrap">
-      <table id="tbl-hoje-emi"></table>
+      <table id="tbl-hoje-emi"><thead><tr><th>CIA</th><th>Provider</th><th>Tipo</th><th class="td-right">Qtd</th><th class="td-right">% na CIA</th><th class="td-right">TR Médio</th></tr></thead><tbody><tr style="border-top:2px solid var(--border)">
+      <td><strong>LATAM</strong></td>
+      <td>patria</td>
+      <td><span class="pill pill-grn">ESPECIAL</span></td>
+      <td class="td-right">13</td>
+      <td class="td-right">38.2%</td>
+      <td class="td-right">-0.6%</td>
+    </tr><tr style="">
+      <td></td>
+      <td></td>
+      <td><span class="pill pill-neu">PÚBLICA</span></td>
+      <td class="td-right">11</td>
+      <td class="td-right">32.4%</td>
+      <td class="td-right">9.8%</td>
+    </tr><tr style="">
+      <td></td>
+      <td>sakura</td>
+      <td><span class="pill pill-grn">ESPECIAL</span></td>
+      <td class="td-right">9</td>
+      <td class="td-right">26.5%</td>
+      <td class="td-right">8.2%</td>
+    </tr><tr style="">
+      <td></td>
+      <td></td>
+      <td><span class="pill pill-neu">PÚBLICA</span></td>
+      <td class="td-right">1</td>
+      <td class="td-right">2.9%</td>
+      <td class="td-right">8.4%</td>
+    </tr><tr style="border-top:2px solid var(--border)">
+      <td><strong>GOL</strong></td>
+      <td>patria</td>
+      <td><span class="pill pill-grn">ESPECIAL</span></td>
+      <td class="td-right">1</td>
+      <td class="td-right">2.4%</td>
+      <td class="td-right">21.7%</td>
+    </tr><tr style="">
+      <td></td>
+      <td></td>
+      <td><span class="pill pill-neu">PÚBLICA</span></td>
+      <td class="td-right">10</td>
+      <td class="td-right">23.8%</td>
+      <td class="td-right">8.2%</td>
+    </tr><tr style="">
+      <td></td>
+      <td>sakura</td>
+      <td><span class="pill pill-grn">ESPECIAL</span></td>
+      <td class="td-right">31</td>
+      <td class="td-right">73.8%</td>
+      <td class="td-right">7.5%</td>
+    </tr><tr style="border-top:2px solid var(--border)">
+      <td><strong>AZUL</strong></td>
+      <td>cturis</td>
+      <td><span class="pill pill-grn">ESPECIAL</span></td>
+      <td class="td-right">6</td>
+      <td class="td-right">11.5%</td>
+      <td class="td-right">11.1%</td>
+    </tr><tr style="">
+      <td></td>
+      <td>patria</td>
+      <td><span class="pill pill-grn">ESPECIAL</span></td>
+      <td class="td-right">2</td>
+      <td class="td-right">3.8%</td>
+      <td class="td-right">2.6%</td>
+    </tr><tr style="">
+      <td></td>
+      <td></td>
+      <td><span class="pill pill-neu">PÚBLICA</span></td>
+      <td class="td-right">11</td>
+      <td class="td-right">21.2%</td>
+      <td class="td-right">8.0%</td>
+    </tr><tr style="">
+      <td></td>
+      <td>sakura</td>
+      <td><span class="pill pill-grn">ESPECIAL</span></td>
+      <td class="td-right">28</td>
+      <td class="td-right">53.8%</td>
+      <td class="td-right">11.0%</td>
+    </tr><tr style="">
+      <td></td>
+      <td></td>
+      <td><span class="pill pill-neu">PÚBLICA</span></td>
+      <td class="td-right">5</td>
+      <td class="td-right">9.6%</td>
+      <td class="td-right">8.1%</td>
+    </tr></tbody></table>
     </div>
   </div>
 </div>
@@ -217,7 +513,7 @@
     <div class="layer-label"><span class="dot dot-green"></span>Camada 1 — Tendência Geral do Período</div>
     <div class="chart-wrap">
       <div class="chart-title">Evolução Diária: Volume × Δ Take Rate</div>
-      <canvas id="chart-temporal" height="100"></canvas>
+      <canvas id="chart-temporal" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas>
     </div>
   </div>
   <div class="layer">
@@ -225,23 +521,744 @@
     <div class="chart-grid">
       <div class="chart-wrap">
         <div class="chart-title">GMV Especial (R$)</div>
-        <canvas id="chart-gmv" height="140"></canvas>
+        <canvas id="chart-gmv" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas>
       </div>
       <div class="chart-wrap">
         <div class="chart-title">% Emissões Especiais</div>
-        <canvas id="chart-pct" height="140"></canvas>
+        <canvas id="chart-pct" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas>
       </div>
     </div>
   </div>
   <div class="layer">
     <div class="layer-label"><span class="dot dot-red"></span>Camada 3 — Tabela Diária Detalhada</div>
     <div class="tbl-wrap">
-      <table id="tbl-temporal"></table>
+      <table id="tbl-temporal"><thead><tr><th>Data</th><th class="td-right">Emissões</th><th class="td-right">% Especial</th><th class="td-right">GMV Esp</th><th class="td-right">Receita</th><th class="td-center">Δ TR</th></tr></thead><tbody><tr>
+      <td>2026-01-01</td>
+      <td class="td-right">409</td>
+      <td class="td-right">63.3%</td>
+      <td class="td-right">R$ 433.246</td>
+      <td class="td-right">R$ 62.224</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+0.57 pp</span></td>
+    </tr><tr>
+      <td>2026-01-02</td>
+      <td class="td-right">538</td>
+      <td class="td-right">61.7%</td>
+      <td class="td-right">R$ 521.781</td>
+      <td class="td-right">R$ 73.178</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+0.20 pp</span></td>
+    </tr><tr>
+      <td>2026-01-03</td>
+      <td class="td-right">495</td>
+      <td class="td-right">60.0%</td>
+      <td class="td-right">R$ 552.772</td>
+      <td class="td-right">R$ 83.150</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+1.40 pp</span></td>
+    </tr><tr>
+      <td>2026-01-04</td>
+      <td class="td-right">377</td>
+      <td class="td-right">59.4%</td>
+      <td class="td-right">R$ 368.940</td>
+      <td class="td-right">R$ 56.503</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+2.05 pp</span></td>
+    </tr><tr>
+      <td>2026-01-05</td>
+      <td class="td-right">539</td>
+      <td class="td-right">62.3%</td>
+      <td class="td-right">R$ 576.777</td>
+      <td class="td-right">R$ 73.851</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+0.41 pp</span></td>
+    </tr><tr>
+      <td>2026-01-06</td>
+      <td class="td-right">428</td>
+      <td class="td-right">59.8%</td>
+      <td class="td-right">R$ 454.801</td>
+      <td class="td-right">R$ 55.437</td>
+      <td class="td-center"><span class="sem-red" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">-1.02 pp</span></td>
+    </tr><tr>
+      <td>2026-01-07</td>
+      <td class="td-right">402</td>
+      <td class="td-right">67.2%</td>
+      <td class="td-right">R$ 420.989</td>
+      <td class="td-right">R$ 51.459</td>
+      <td class="td-center"><span class="sem-red" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">-0.54 pp</span></td>
+    </tr><tr>
+      <td>2026-01-08</td>
+      <td class="td-right">591</td>
+      <td class="td-right">61.3%</td>
+      <td class="td-right">R$ 543.445</td>
+      <td class="td-right">R$ 63.119</td>
+      <td class="td-center"><span class="sem-red" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">-2.17 pp</span></td>
+    </tr><tr>
+      <td>2026-01-09</td>
+      <td class="td-right">696</td>
+      <td class="td-right">61.6%</td>
+      <td class="td-right">R$ 661.964</td>
+      <td class="td-right">R$ 80.943</td>
+      <td class="td-center"><span class="sem-red" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">-1.55 pp</span></td>
+    </tr><tr>
+      <td>2026-01-10</td>
+      <td class="td-right">574</td>
+      <td class="td-right">60.5%</td>
+      <td class="td-right">R$ 529.486</td>
+      <td class="td-right">R$ 62.496</td>
+      <td class="td-center"><span class="sem-red" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">-1.21 pp</span></td>
+    </tr><tr>
+      <td>2026-01-11</td>
+      <td class="td-right">560</td>
+      <td class="td-right">57.0%</td>
+      <td class="td-right">R$ 459.517</td>
+      <td class="td-right">R$ 55.760</td>
+      <td class="td-center"><span class="sem-red" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">-1.25 pp</span></td>
+    </tr><tr>
+      <td>2026-01-12</td>
+      <td class="td-right">376</td>
+      <td class="td-right">58.5%</td>
+      <td class="td-right">R$ 307.719</td>
+      <td class="td-right">R$ 38.071</td>
+      <td class="td-center"><span class="sem-red" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">-0.41 pp</span></td>
+    </tr><tr>
+      <td>2026-01-13</td>
+      <td class="td-right">358</td>
+      <td class="td-right">62.8%</td>
+      <td class="td-right">R$ 287.794</td>
+      <td class="td-right">R$ 35.430</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+3.00 pp</span></td>
+    </tr><tr>
+      <td>2026-01-14</td>
+      <td class="td-right">471</td>
+      <td class="td-right">64.1%</td>
+      <td class="td-right">R$ 475.475</td>
+      <td class="td-right">R$ 54.972</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+0.90 pp</span></td>
+    </tr><tr>
+      <td>2026-01-15</td>
+      <td class="td-right">487</td>
+      <td class="td-right">60.8%</td>
+      <td class="td-right">R$ 432.868</td>
+      <td class="td-right">R$ 49.425</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+1.85 pp</span></td>
+    </tr><tr>
+      <td>2026-01-16</td>
+      <td class="td-right">438</td>
+      <td class="td-right">57.3%</td>
+      <td class="td-right">R$ 339.267</td>
+      <td class="td-right">R$ 43.828</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+2.57 pp</span></td>
+    </tr><tr>
+      <td>2026-01-17</td>
+      <td class="td-right">430</td>
+      <td class="td-right">58.1%</td>
+      <td class="td-right">R$ 348.770</td>
+      <td class="td-right">R$ 42.395</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+1.47 pp</span></td>
+    </tr><tr>
+      <td>2026-01-18</td>
+      <td class="td-right">368</td>
+      <td class="td-right">55.2%</td>
+      <td class="td-right">R$ 258.398</td>
+      <td class="td-right">R$ 32.116</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+2.72 pp</span></td>
+    </tr><tr>
+      <td>2026-01-19</td>
+      <td class="td-right">376</td>
+      <td class="td-right">54.8%</td>
+      <td class="td-right">R$ 320.235</td>
+      <td class="td-right">R$ 38.774</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+2.46 pp</span></td>
+    </tr><tr>
+      <td>2026-01-20</td>
+      <td class="td-right">443</td>
+      <td class="td-right">57.8%</td>
+      <td class="td-right">R$ 385.547</td>
+      <td class="td-right">R$ 46.290</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+1.09 pp</span></td>
+    </tr><tr>
+      <td>2026-01-21</td>
+      <td class="td-right">314</td>
+      <td class="td-right">51.9%</td>
+      <td class="td-right">R$ 229.447</td>
+      <td class="td-right">R$ 26.947</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+1.55 pp</span></td>
+    </tr><tr>
+      <td>2026-01-22</td>
+      <td class="td-right">364</td>
+      <td class="td-right">56.9%</td>
+      <td class="td-right">R$ 342.659</td>
+      <td class="td-right">R$ 38.740</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+2.10 pp</span></td>
+    </tr><tr>
+      <td>2026-01-23</td>
+      <td class="td-right">311</td>
+      <td class="td-right">47.6%</td>
+      <td class="td-right">R$ 186.268</td>
+      <td class="td-right">R$ 20.766</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+1.27 pp</span></td>
+    </tr><tr>
+      <td>2026-01-24</td>
+      <td class="td-right">244</td>
+      <td class="td-right">55.7%</td>
+      <td class="td-right">R$ 203.757</td>
+      <td class="td-right">R$ 22.518</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+1.37 pp</span></td>
+    </tr><tr>
+      <td>2026-01-25</td>
+      <td class="td-right">290</td>
+      <td class="td-right">54.8%</td>
+      <td class="td-right">R$ 236.284</td>
+      <td class="td-right">R$ 26.386</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+2.30 pp</span></td>
+    </tr><tr>
+      <td>2026-01-26</td>
+      <td class="td-right">352</td>
+      <td class="td-right">61.1%</td>
+      <td class="td-right">R$ 333.353</td>
+      <td class="td-right">R$ 35.302</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+0.37 pp</span></td>
+    </tr><tr>
+      <td>2026-01-27</td>
+      <td class="td-right">372</td>
+      <td class="td-right">65.3%</td>
+      <td class="td-right">R$ 353.702</td>
+      <td class="td-right">R$ 38.863</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+0.68 pp</span></td>
+    </tr><tr>
+      <td>2026-01-28</td>
+      <td class="td-right">362</td>
+      <td class="td-right">68.8%</td>
+      <td class="td-right">R$ 378.096</td>
+      <td class="td-right">R$ 40.290</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+0.81 pp</span></td>
+    </tr><tr>
+      <td>2026-01-29</td>
+      <td class="td-right">298</td>
+      <td class="td-right">65.1%</td>
+      <td class="td-right">R$ 318.999</td>
+      <td class="td-right">R$ 35.513</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+0.54 pp</span></td>
+    </tr><tr>
+      <td>2026-01-30</td>
+      <td class="td-right">284</td>
+      <td class="td-right">62.3%</td>
+      <td class="td-right">R$ 305.389</td>
+      <td class="td-right">R$ 34.681</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+1.13 pp</span></td>
+    </tr><tr>
+      <td>2026-01-31</td>
+      <td class="td-right">246</td>
+      <td class="td-right">62.2%</td>
+      <td class="td-right">R$ 216.079</td>
+      <td class="td-right">R$ 24.876</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+0.32 pp</span></td>
+    </tr><tr>
+      <td>2026-02-01</td>
+      <td class="td-right">188</td>
+      <td class="td-right">59.6%</td>
+      <td class="td-right">R$ 191.620</td>
+      <td class="td-right">R$ 24.473</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+2.99 pp</span></td>
+    </tr><tr>
+      <td>2026-02-02</td>
+      <td class="td-right">335</td>
+      <td class="td-right">61.2%</td>
+      <td class="td-right">R$ 362.497</td>
+      <td class="td-right">R$ 46.816</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+2.99 pp</span></td>
+    </tr><tr>
+      <td>2026-02-03</td>
+      <td class="td-right">256</td>
+      <td class="td-right">60.9%</td>
+      <td class="td-right">R$ 237.955</td>
+      <td class="td-right">R$ 32.111</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+1.76 pp</span></td>
+    </tr><tr>
+      <td>2026-02-04</td>
+      <td class="td-right">292</td>
+      <td class="td-right">62.7%</td>
+      <td class="td-right">R$ 276.886</td>
+      <td class="td-right">R$ 35.365</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+3.48 pp</span></td>
+    </tr><tr>
+      <td>2026-02-05</td>
+      <td class="td-right">333</td>
+      <td class="td-right">63.7%</td>
+      <td class="td-right">R$ 279.715</td>
+      <td class="td-right">R$ 33.992</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+1.97 pp</span></td>
+    </tr><tr>
+      <td>2026-02-06</td>
+      <td class="td-right">331</td>
+      <td class="td-right">56.8%</td>
+      <td class="td-right">R$ 256.995</td>
+      <td class="td-right">R$ 32.930</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+3.43 pp</span></td>
+    </tr><tr>
+      <td>2026-02-07</td>
+      <td class="td-right">302</td>
+      <td class="td-right">64.2%</td>
+      <td class="td-right">R$ 245.599</td>
+      <td class="td-right">R$ 30.165</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+2.67 pp</span></td>
+    </tr><tr>
+      <td>2026-02-08</td>
+      <td class="td-right">305</td>
+      <td class="td-right">65.2%</td>
+      <td class="td-right">R$ 319.625</td>
+      <td class="td-right">R$ 40.995</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+2.72 pp</span></td>
+    </tr><tr>
+      <td>2026-02-09</td>
+      <td class="td-right">254</td>
+      <td class="td-right">60.6%</td>
+      <td class="td-right">R$ 172.553</td>
+      <td class="td-right">R$ 21.262</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+0.96 pp</span></td>
+    </tr><tr>
+      <td>2026-02-10</td>
+      <td class="td-right">352</td>
+      <td class="td-right">57.4%</td>
+      <td class="td-right">R$ 308.328</td>
+      <td class="td-right">R$ 37.053</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+1.03 pp</span></td>
+    </tr><tr>
+      <td>2026-02-11</td>
+      <td class="td-right">292</td>
+      <td class="td-right">57.2%</td>
+      <td class="td-right">R$ 261.628</td>
+      <td class="td-right">R$ 30.789</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+0.55 pp</span></td>
+    </tr><tr>
+      <td>2026-02-12</td>
+      <td class="td-right">348</td>
+      <td class="td-right">60.9%</td>
+      <td class="td-right">R$ 302.209</td>
+      <td class="td-right">R$ 35.273</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+0.85 pp</span></td>
+    </tr><tr>
+      <td>2026-02-13</td>
+      <td class="td-right">330</td>
+      <td class="td-right">69.1%</td>
+      <td class="td-right">R$ 330.561</td>
+      <td class="td-right">R$ 40.816</td>
+      <td class="td-center"><span class="sem-red" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">-1.77 pp</span></td>
+    </tr><tr>
+      <td>2026-02-14</td>
+      <td class="td-right">277</td>
+      <td class="td-right">57.4%</td>
+      <td class="td-right">R$ 270.003</td>
+      <td class="td-right">R$ 34.901</td>
+      <td class="td-center"><span class="sem-red" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">-2.42 pp</span></td>
+    </tr><tr>
+      <td>2026-02-15</td>
+      <td class="td-right">335</td>
+      <td class="td-right">64.2%</td>
+      <td class="td-right">R$ 310.708</td>
+      <td class="td-right">R$ 39.958</td>
+      <td class="td-center"><span class="sem-red" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">-2.22 pp</span></td>
+    </tr><tr>
+      <td>2026-02-16</td>
+      <td class="td-right">395</td>
+      <td class="td-right">64.1%</td>
+      <td class="td-right">R$ 466.619</td>
+      <td class="td-right">R$ 59.877</td>
+      <td class="td-center"><span class="sem-red" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">-2.14 pp</span></td>
+    </tr><tr>
+      <td>2026-02-17</td>
+      <td class="td-right">365</td>
+      <td class="td-right">59.5%</td>
+      <td class="td-right">R$ 270.905</td>
+      <td class="td-right">R$ 32.666</td>
+      <td class="td-center"><span class="sem-red" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">-1.95 pp</span></td>
+    </tr><tr>
+      <td>2026-02-18</td>
+      <td class="td-right">380</td>
+      <td class="td-right">65.5%</td>
+      <td class="td-right">R$ 336.526</td>
+      <td class="td-right">R$ 41.318</td>
+      <td class="td-center"><span class="sem-red" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">-2.20 pp</span></td>
+    </tr><tr>
+      <td>2026-02-19</td>
+      <td class="td-right">516</td>
+      <td class="td-right">60.3%</td>
+      <td class="td-right">R$ 493.779</td>
+      <td class="td-right">R$ 62.155</td>
+      <td class="td-center"><span class="sem-red" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">-2.01 pp</span></td>
+    </tr><tr>
+      <td>2026-02-20</td>
+      <td class="td-right">345</td>
+      <td class="td-right">62.6%</td>
+      <td class="td-right">R$ 345.013</td>
+      <td class="td-right">R$ 46.480</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+1.19 pp</span></td>
+    </tr><tr>
+      <td>2026-02-21</td>
+      <td class="td-right">242</td>
+      <td class="td-right">50.0%</td>
+      <td class="td-right">R$ 207.751</td>
+      <td class="td-right">R$ 28.967</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+3.33 pp</span></td>
+    </tr><tr>
+      <td>2026-02-22</td>
+      <td class="td-right">263</td>
+      <td class="td-right">54.8%</td>
+      <td class="td-right">R$ 192.756</td>
+      <td class="td-right">R$ 26.758</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+4.08 pp</span></td>
+    </tr><tr>
+      <td>2026-02-23</td>
+      <td class="td-right">363</td>
+      <td class="td-right">60.1%</td>
+      <td class="td-right">R$ 274.044</td>
+      <td class="td-right">R$ 36.183</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+6.05 pp</span></td>
+    </tr><tr>
+      <td>2026-02-24</td>
+      <td class="td-right">213</td>
+      <td class="td-right">58.2%</td>
+      <td class="td-right">R$ 203.913</td>
+      <td class="td-right">R$ 27.342</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+6.64 pp</span></td>
+    </tr><tr>
+      <td>2026-02-25</td>
+      <td class="td-right">397</td>
+      <td class="td-right">52.1%</td>
+      <td class="td-right">R$ 269.912</td>
+      <td class="td-right">R$ 33.188</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+5.71 pp</span></td>
+    </tr><tr>
+      <td>2026-02-26</td>
+      <td class="td-right">335</td>
+      <td class="td-right">57.6%</td>
+      <td class="td-right">R$ 232.809</td>
+      <td class="td-right">R$ 27.508</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+5.58 pp</span></td>
+    </tr><tr>
+      <td>2026-02-27</td>
+      <td class="td-right">347</td>
+      <td class="td-right">62.8%</td>
+      <td class="td-right">R$ 321.266</td>
+      <td class="td-right">R$ 38.919</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+2.77 pp</span></td>
+    </tr><tr>
+      <td>2026-02-28</td>
+      <td class="td-right">300</td>
+      <td class="td-right">61.7%</td>
+      <td class="td-right">R$ 253.896</td>
+      <td class="td-right">R$ 31.183</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+3.20 pp</span></td>
+    </tr><tr>
+      <td>2026-03-01</td>
+      <td class="td-right">301</td>
+      <td class="td-right">50.5%</td>
+      <td class="td-right">R$ 195.667</td>
+      <td class="td-right">R$ 24.603</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+2.51 pp</span></td>
+    </tr><tr>
+      <td>2026-03-02</td>
+      <td class="td-right">371</td>
+      <td class="td-right">59.0%</td>
+      <td class="td-right">R$ 285.670</td>
+      <td class="td-right">R$ 36.047</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+0.58 pp</span></td>
+    </tr><tr>
+      <td>2026-03-03</td>
+      <td class="td-right">429</td>
+      <td class="td-right">56.9%</td>
+      <td class="td-right">R$ 340.049</td>
+      <td class="td-right">R$ 41.049</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+2.47 pp</span></td>
+    </tr><tr>
+      <td>2026-03-04</td>
+      <td class="td-right">334</td>
+      <td class="td-right">60.5%</td>
+      <td class="td-right">R$ 260.851</td>
+      <td class="td-right">R$ 30.802</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+0.70 pp</span></td>
+    </tr><tr>
+      <td>2026-03-05</td>
+      <td class="td-right">341</td>
+      <td class="td-right">51.3%</td>
+      <td class="td-right">R$ 247.394</td>
+      <td class="td-right">R$ 28.087</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+1.81 pp</span></td>
+    </tr><tr>
+      <td>2026-03-06</td>
+      <td class="td-right">343</td>
+      <td class="td-right">47.8%</td>
+      <td class="td-right">R$ 237.485</td>
+      <td class="td-right">R$ 27.348</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+2.57 pp</span></td>
+    </tr><tr>
+      <td>2026-03-07</td>
+      <td class="td-right">280</td>
+      <td class="td-right">50.7%</td>
+      <td class="td-right">R$ 233.596</td>
+      <td class="td-right">R$ 29.043</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+2.61 pp</span></td>
+    </tr><tr>
+      <td>2026-03-08</td>
+      <td class="td-right">241</td>
+      <td class="td-right">45.2%</td>
+      <td class="td-right">R$ 160.802</td>
+      <td class="td-right">R$ 18.884</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+3.46 pp</span></td>
+    </tr><tr>
+      <td>2026-03-09</td>
+      <td class="td-right">266</td>
+      <td class="td-right">51.5%</td>
+      <td class="td-right">R$ 263.935</td>
+      <td class="td-right">R$ 34.033</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+2.77 pp</span></td>
+    </tr><tr>
+      <td>2026-03-10</td>
+      <td class="td-right">321</td>
+      <td class="td-right">52.6%</td>
+      <td class="td-right">R$ 258.107</td>
+      <td class="td-right">R$ 33.528</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+2.35 pp</span></td>
+    </tr><tr>
+      <td>2026-03-11</td>
+      <td class="td-right">207</td>
+      <td class="td-right">39.6%</td>
+      <td class="td-right">R$ 126.614</td>
+      <td class="td-right">R$ 16.533</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+2.82 pp</span></td>
+    </tr><tr>
+      <td>2026-03-12</td>
+      <td class="td-right">157</td>
+      <td class="td-right">36.9%</td>
+      <td class="td-right">R$ 100.540</td>
+      <td class="td-right">R$ 11.886</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+1.92 pp</span></td>
+    </tr><tr>
+      <td>2026-03-13</td>
+      <td class="td-right">290</td>
+      <td class="td-right">52.4%</td>
+      <td class="td-right">R$ 270.031</td>
+      <td class="td-right">R$ 32.248</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+1.71 pp</span></td>
+    </tr><tr>
+      <td>2026-03-14</td>
+      <td class="td-right">321</td>
+      <td class="td-right">56.1%</td>
+      <td class="td-right">R$ 270.883</td>
+      <td class="td-right">R$ 33.514</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+2.99 pp</span></td>
+    </tr><tr>
+      <td>2026-03-15</td>
+      <td class="td-right">366</td>
+      <td class="td-right">53.3%</td>
+      <td class="td-right">R$ 276.296</td>
+      <td class="td-right">R$ 34.301</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+2.84 pp</span></td>
+    </tr><tr>
+      <td>2026-03-16</td>
+      <td class="td-right">348</td>
+      <td class="td-right">53.4%</td>
+      <td class="td-right">R$ 236.771</td>
+      <td class="td-right">R$ 28.568</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+2.23 pp</span></td>
+    </tr><tr>
+      <td>2026-03-17</td>
+      <td class="td-right">306</td>
+      <td class="td-right">57.2%</td>
+      <td class="td-right">R$ 306.433</td>
+      <td class="td-right">R$ 37.760</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+2.58 pp</span></td>
+    </tr><tr>
+      <td>2026-03-18</td>
+      <td class="td-right">318</td>
+      <td class="td-right">60.4%</td>
+      <td class="td-right">R$ 314.476</td>
+      <td class="td-right">R$ 39.443</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+1.99 pp</span></td>
+    </tr><tr>
+      <td>2026-03-19</td>
+      <td class="td-right">269</td>
+      <td class="td-right">63.2%</td>
+      <td class="td-right">R$ 285.412</td>
+      <td class="td-right">R$ 37.088</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+1.93 pp</span></td>
+    </tr><tr>
+      <td>2026-03-20</td>
+      <td class="td-right">192</td>
+      <td class="td-right">57.8%</td>
+      <td class="td-right">R$ 206.864</td>
+      <td class="td-right">R$ 25.969</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+2.16 pp</span></td>
+    </tr><tr>
+      <td>2026-03-21</td>
+      <td class="td-right">232</td>
+      <td class="td-right">57.3%</td>
+      <td class="td-right">R$ 197.439</td>
+      <td class="td-right">R$ 24.701</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+2.04 pp</span></td>
+    </tr><tr>
+      <td>2026-03-22</td>
+      <td class="td-right">171</td>
+      <td class="td-right">54.4%</td>
+      <td class="td-right">R$ 139.443</td>
+      <td class="td-right">R$ 17.733</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+3.74 pp</span></td>
+    </tr><tr>
+      <td>2026-03-23</td>
+      <td class="td-right">259</td>
+      <td class="td-right">61.8%</td>
+      <td class="td-right">R$ 279.218</td>
+      <td class="td-right">R$ 35.853</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+2.36 pp</span></td>
+    </tr><tr>
+      <td>2026-03-24</td>
+      <td class="td-right">335</td>
+      <td class="td-right">55.8%</td>
+      <td class="td-right">R$ 298.475</td>
+      <td class="td-right">R$ 38.501</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+1.55 pp</span></td>
+    </tr><tr>
+      <td>2026-03-25</td>
+      <td class="td-right">323</td>
+      <td class="td-right">58.2%</td>
+      <td class="td-right">R$ 271.869</td>
+      <td class="td-right">R$ 34.282</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+1.95 pp</span></td>
+    </tr><tr>
+      <td>2026-03-26</td>
+      <td class="td-right">293</td>
+      <td class="td-right">58.4%</td>
+      <td class="td-right">R$ 294.742</td>
+      <td class="td-right">R$ 34.845</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+1.88 pp</span></td>
+    </tr><tr>
+      <td>2026-03-27</td>
+      <td class="td-right">280</td>
+      <td class="td-right">53.2%</td>
+      <td class="td-right">R$ 240.586</td>
+      <td class="td-right">R$ 29.730</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+1.56 pp</span></td>
+    </tr><tr>
+      <td>2026-03-28</td>
+      <td class="td-right">304</td>
+      <td class="td-right">58.9%</td>
+      <td class="td-right">R$ 250.419</td>
+      <td class="td-right">R$ 31.608</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+1.57 pp</span></td>
+    </tr><tr>
+      <td>2026-03-29</td>
+      <td class="td-right">248</td>
+      <td class="td-right">50.0%</td>
+      <td class="td-right">R$ 182.307</td>
+      <td class="td-right">R$ 23.750</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+2.74 pp</span></td>
+    </tr><tr>
+      <td>2026-03-30</td>
+      <td class="td-right">333</td>
+      <td class="td-right">59.2%</td>
+      <td class="td-right">R$ 279.975</td>
+      <td class="td-right">R$ 35.401</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+3.50 pp</span></td>
+    </tr><tr>
+      <td>2026-03-31</td>
+      <td class="td-right">607</td>
+      <td class="td-right">24.2%</td>
+      <td class="td-right">R$ 199.199</td>
+      <td class="td-right">R$ 24.297</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+3.79 pp</span></td>
+    </tr><tr>
+      <td>2026-04-01</td>
+      <td class="td-right">610</td>
+      <td class="td-right">32.1%</td>
+      <td class="td-right">R$ 263.415</td>
+      <td class="td-right">R$ 39.686</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+3.68 pp</span></td>
+    </tr><tr>
+      <td>2026-04-02</td>
+      <td class="td-right">528</td>
+      <td class="td-right">69.7%</td>
+      <td class="td-right">R$ 543.098</td>
+      <td class="td-right">R$ 70.783</td>
+      <td class="td-center"><span class="sem-red" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">-2.60 pp</span></td>
+    </tr><tr>
+      <td>2026-04-03</td>
+      <td class="td-right">682</td>
+      <td class="td-right">62.8%</td>
+      <td class="td-right">R$ 629.230</td>
+      <td class="td-right">R$ 81.581</td>
+      <td class="td-center"><span class="sem-red" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">-1.81 pp</span></td>
+    </tr><tr>
+      <td>2026-04-04</td>
+      <td class="td-right">510</td>
+      <td class="td-right">63.7%</td>
+      <td class="td-right">R$ 432.038</td>
+      <td class="td-right">R$ 57.465</td>
+      <td class="td-center"><span class="sem-red" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">-0.68 pp</span></td>
+    </tr><tr>
+      <td>2026-04-05</td>
+      <td class="td-right">453</td>
+      <td class="td-right">62.5%</td>
+      <td class="td-right">R$ 387.396</td>
+      <td class="td-right">R$ 51.523</td>
+      <td class="td-center"><span class="sem-red" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">-1.89 pp</span></td>
+    </tr><tr>
+      <td>2026-04-06</td>
+      <td class="td-right">408</td>
+      <td class="td-right">64.7%</td>
+      <td class="td-right">R$ 377.310</td>
+      <td class="td-right">R$ 50.632</td>
+      <td class="td-center"><span class="sem-red" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">-1.63 pp</span></td>
+    </tr><tr>
+      <td>2026-04-07</td>
+      <td class="td-right">494</td>
+      <td class="td-right">66.0%</td>
+      <td class="td-right">R$ 480.739</td>
+      <td class="td-right">R$ 64.443</td>
+      <td class="td-center"><span class="sem-red" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">-1.53 pp</span></td>
+    </tr><tr>
+      <td>2026-04-08</td>
+      <td class="td-right">417</td>
+      <td class="td-right">67.9%</td>
+      <td class="td-right">R$ 422.957</td>
+      <td class="td-right">R$ 62.925</td>
+      <td class="td-center"><span class="sem-red" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">-0.45 pp</span></td>
+    </tr><tr>
+      <td>2026-04-09</td>
+      <td class="td-right">335</td>
+      <td class="td-right">67.5%</td>
+      <td class="td-right">R$ 379.949</td>
+      <td class="td-right">R$ 51.319</td>
+      <td class="td-center"><span class="sem-red" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">-1.05 pp</span></td>
+    </tr><tr>
+      <td>2026-04-10</td>
+      <td class="td-right">478</td>
+      <td class="td-right">65.7%</td>
+      <td class="td-right">R$ 496.593</td>
+      <td class="td-right">R$ 68.628</td>
+      <td class="td-center"><span class="sem-red" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">-1.00 pp</span></td>
+    </tr><tr>
+      <td>2026-04-11</td>
+      <td class="td-right">336</td>
+      <td class="td-right">62.5%</td>
+      <td class="td-right">R$ 342.374</td>
+      <td class="td-right">R$ 52.895</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+0.77 pp</span></td>
+    </tr><tr>
+      <td>2026-04-12</td>
+      <td class="td-right">378</td>
+      <td class="td-right">64.8%</td>
+      <td class="td-right">R$ 427.612</td>
+      <td class="td-right">R$ 64.635</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">+0.79 pp</span></td>
+    </tr><tr>
+      <td>2026-04-13</td>
+      <td class="td-right">128</td>
+      <td class="td-right">70.3%</td>
+      <td class="td-right">R$ 169.994</td>
+      <td class="td-right">R$ 27.251</td>
+      <td class="td-center"><span class="sem-red" style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">-0.84 pp</span></td>
+    </tr></tbody></table>
     </div>
   </div>
   <div style="margin-top:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;">
     <div style="font-size:12px;font-weight:700;color:var(--txt2);text-transform:uppercase;margin-bottom:10px;">💡 Sugestões de Ação</div>
-    <div id="acoes-temporais"></div>
+    <div id="acoes-temporais"><div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;">🔴 <strong>Renegociação urgente:</strong> Δ TR negativo em 5 dos últimos 7 dias — condições especiais piorando sistematicamente. Convocar reunião com providers prioritários.</div><div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;">📋 <strong>Monitorar robot:</strong> Dias com % especial &gt; 70% podem indicar sobreposição inadequada de condições cotação.</div><div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;">💡 <strong>Oportunidade Flytour/GOL:</strong> Δ TR de +3,22 pp — expandir share nesta combinação via ajuste de prioridade de exibição.</div></div>
   </div>
 </div>
 
@@ -252,22 +1269,22 @@
     <div class="cards cards-4">
       <div class="card">
         <div class="card-title">Total de Emissões</div>
-        <div class="card-val" id="bvse-total"></div>
+        <div class="card-val" id="bvse-total">36.927</div>
         <div class="card-sub">Período completo</div>
       </div>
       <div class="card">
         <div class="card-title">Emissão Especial</div>
-        <div class="card-val" id="bvse-esp"></div>
-        <div class="card-sub" id="bvse-esp-pct"></div>
+        <div class="card-val" id="bvse-esp">21.626</div>
+        <div class="card-sub" id="bvse-esp-pct">58.6% das emissões</div>
       </div>
       <div class="card">
         <div class="card-title">GMV Especial</div>
-        <div class="card-val" id="bvse-gmv"></div>
+        <div class="card-val" id="bvse-gmv">R$ 32.644.153</div>
         <div class="card-sub">Emissões em condição negociada</div>
       </div>
       <div class="card">
         <div class="card-title">Receita Incremental</div>
-        <div class="card-val" id="bvse-rec"></div>
+        <div class="card-val" id="bvse-rec">R$ 4.128.949</div>
         <div class="card-sub">Ganho vs emissão pública</div>
       </div>
     </div>
@@ -275,13 +1292,45 @@
   <div class="layer">
     <div class="layer-label"><span class="dot dot-yellow"></span>Camada 2 — Por CIA: Take Rate Público vs Especial</div>
     <div class="tbl-wrap">
-      <table id="tbl-bvse-cia"></table>
+      <table id="tbl-bvse-cia"><thead><tr><th>CIA</th><th class="td-right">Total</th><th class="td-right">% Especial</th><th class="td-right">TR Público</th><th class="td-right">TR Especial</th><th class="td-center">Δ TR</th><th class="td-right">GMV Esp</th></tr></thead><tbody><tr>
+      <td><strong>LATAM</strong></td>
+      <td class="td-right">9.197</td>
+      <td class="td-right">59.9%</td>
+      <td class="td-right">7.3%</td>
+      <td class="td-right">9.0%</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:3px 10px;border-radius:6px;font-weight:700;">+1.72 pp</span></td>
+      <td class="td-right">R$ 9.120.530</td>
+    </tr><tr>
+      <td><strong>GOL</strong></td>
+      <td class="td-right">9.432</td>
+      <td class="td-right">61.4%</td>
+      <td class="td-right">7.4%</td>
+      <td class="td-right">8.8%</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:3px 10px;border-radius:6px;font-weight:700;">+1.41 pp</span></td>
+      <td class="td-right">R$ 8.448.111</td>
+    </tr><tr>
+      <td><strong>AZUL</strong></td>
+      <td class="td-right">17.410</td>
+      <td class="td-right">58.7%</td>
+      <td class="td-right">7.6%</td>
+      <td class="td-right">7.8%</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:3px 10px;border-radius:6px;font-weight:700;">+0.16 pp</span></td>
+      <td class="td-right">R$ 14.725.197</td>
+    </tr><tr>
+      <td><strong>Outros</strong></td>
+      <td class="td-right">888</td>
+      <td class="td-right">11.8%</td>
+      <td class="td-right">3.3%</td>
+      <td class="td-right">4.0%</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:3px 10px;border-radius:6px;font-weight:700;">+0.67 pp</span></td>
+      <td class="td-right">R$ 350.315</td>
+    </tr></tbody></table>
     </div>
   </div>
   <div class="layer">
     <div class="layer-label"><span class="dot dot-red"></span>Camada 3 — Por Provider × CIA: Δ Take Rate Detalhado</div>
     <div class="tbl-wrap">
-      <table id="tbl-bvse-prov"></table>
+      <table id="tbl-bvse-prov"><thead><tr><th>Provider</th><th class="td-right">LATAM Qtd</th><th class="td-right">LATAM %Esp</th><th class="td-center">LATAM ΔTR</th><th class="td-right">GOL Qtd</th><th class="td-right">GOL %Esp</th><th class="td-center">GOL ΔTR</th><th class="td-right">AZUL Qtd</th><th class="td-right">AZUL %Esp</th><th class="td-center">AZUL ΔTR</th><th class="td-right">Outros Qtd</th><th class="td-right">Outros %Esp</th><th class="td-center">Outros ΔTR</th></tr></thead><tbody><tr><td><strong>cturis</strong></td><td class="td-right">858</td><td class="td-right">48.0%</td><td class="td-center"><span class="sem-red" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">-0.56 pp</span></td><td class="td-right">10</td><td class="td-right">100.0%</td><td class="td-center">—</td><td class="td-right">5.263</td><td class="td-right">78.1%</td><td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.25 pp</span></td><td class="td-right">120</td><td class="td-right">0.0%</td><td class="td-center">—</td></tr><tr><td><strong>evtur</strong></td><td class="td-right">—</td><td class="td-right">—</td><td class="td-center">—</td><td class="td-right">8</td><td class="td-right">100.0%</td><td class="td-center">—</td><td class="td-right">—</td><td class="td-right">—</td><td class="td-center">—</td><td class="td-right">—</td><td class="td-right">—</td><td class="td-center">—</td></tr><tr><td><strong>flytour</strong></td><td class="td-right">1.323</td><td class="td-right">88.5%</td><td class="td-center"><span class="sem-red" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">-0.25 pp</span></td><td class="td-right">793</td><td class="td-right">83.1%</td><td class="td-center"><span class="sem-grn" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+2.29 pp</span></td><td class="td-right">1.316</td><td class="td-right">87.1%</td><td class="td-center"><span class="sem-grn" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+2.13 pp</span></td><td class="td-right">496</td><td class="td-right">0.0%</td><td class="td-center">—</td></tr><tr><td><strong>patria</strong></td><td class="td-right">4.940</td><td class="td-right">62.6%</td><td class="td-center"><span class="sem-grn" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+2.51 pp</span></td><td class="td-right">4.062</td><td class="td-right">54.6%</td><td class="td-center"><span class="sem-grn" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+2.19 pp</span></td><td class="td-right">4.295</td><td class="td-right">38.0%</td><td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.11 pp</span></td><td class="td-right">21</td><td class="td-right">100.0%</td><td class="td-center">—</td></tr><tr><td><strong>rextur</strong></td><td class="td-right">56</td><td class="td-right">0.0%</td><td class="td-center">—</td><td class="td-right">—</td><td class="td-right">—</td><td class="td-center">—</td><td class="td-right">37</td><td class="td-right">100.0%</td><td class="td-center">—</td><td class="td-right">251</td><td class="td-right">33.5%</td><td class="td-center"><span class="sem-red" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">-0.17 pp</span></td></tr><tr><td><strong>sakura</strong></td><td class="td-right">2.020</td><td class="td-right">41.0%</td><td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.52 pp</span></td><td class="td-right">4.559</td><td class="td-right">63.6%</td><td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.47 pp</span></td><td class="td-right">6.499</td><td class="td-right">50.7%</td><td class="td-center"><span class="sem-red" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">-0.23 pp</span></td><td class="td-right">—</td><td class="td-right">—</td><td class="td-center">—</td></tr></tbody></table>
     </div>
   </div>
 </div>
@@ -290,25 +1339,61 @@
 <div class="tab-panel" id="panel-4">
   <div class="layer">
     <div class="layer-label"><span class="dot dot-green"></span>Camada 1 — Cards por CIA</div>
-    <div class="cards cards-4" id="cia-cards"></div>
+    <div class="cards cards-4" id="cia-cards"><div class="cia-card cia-latam">
+      <h3>LATAM</h3>
+      <div class="cia-row"><label>Emissões</label><span class="val">9.197</span></div>
+      <div class="cia-row"><label>% Especial</label><span class="val">59.9%</span></div>
+      <div class="cia-row"><label>GMV Especial</label><span class="val">R$ 9.120.530</span></div>
+      <div class="cia-row"><label>Take Rate Médio</label><span class="val">9.0%</span></div>
+      <div class="cia-row"><label>TR Público</label><span class="val">7.3%</span></div>
+      <div class="cia-row"><label>Δ Take Rate</label><span class="val sem-ylw" style="padding:2px 8px;border-radius:6px;">+1.72 pp</span></div>
+      <div class="cia-row"><label>Receita Incremental</label><span class="val">R$ 761.717</span></div>
+    </div><div class="cia-card cia-gol">
+      <h3>GOL</h3>
+      <div class="cia-row"><label>Emissões</label><span class="val">9.432</span></div>
+      <div class="cia-row"><label>% Especial</label><span class="val">61.4%</span></div>
+      <div class="cia-row"><label>GMV Especial</label><span class="val">R$ 8.448.111</span></div>
+      <div class="cia-row"><label>Take Rate Médio</label><span class="val">8.8%</span></div>
+      <div class="cia-row"><label>TR Público</label><span class="val">7.4%</span></div>
+      <div class="cia-row"><label>Δ Take Rate</label><span class="val sem-ylw" style="padding:2px 8px;border-radius:6px;">+1.41 pp</span></div>
+      <div class="cia-row"><label>Receita Incremental</label><span class="val">R$ 669.084</span></div>
+    </div><div class="cia-card cia-azul">
+      <h3>AZUL</h3>
+      <div class="cia-row"><label>Emissões</label><span class="val">17.410</span></div>
+      <div class="cia-row"><label>% Especial</label><span class="val">58.7%</span></div>
+      <div class="cia-row"><label>GMV Especial</label><span class="val">R$ 14.725.197</span></div>
+      <div class="cia-row"><label>Take Rate Médio</label><span class="val">7.8%</span></div>
+      <div class="cia-row"><label>TR Público</label><span class="val">7.6%</span></div>
+      <div class="cia-row"><label>Δ Take Rate</label><span class="val sem-ylw" style="padding:2px 8px;border-radius:6px;">+0.16 pp</span></div>
+      <div class="cia-row"><label>Receita Incremental</label><span class="val">R$ 820.183</span></div>
+    </div><div class="cia-card cia-outros">
+      <h3>Outros</h3>
+      <div class="cia-row"><label>Emissões</label><span class="val">888</span></div>
+      <div class="cia-row"><label>% Especial</label><span class="val">11.8%</span></div>
+      <div class="cia-row"><label>GMV Especial</label><span class="val">R$ 350.315</span></div>
+      <div class="cia-row"><label>Take Rate Médio</label><span class="val">4.0%</span></div>
+      <div class="cia-row"><label>TR Público</label><span class="val">3.3%</span></div>
+      <div class="cia-row"><label>Δ Take Rate</label><span class="val sem-ylw" style="padding:2px 8px;border-radius:6px;">+0.67 pp</span></div>
+      <div class="cia-row"><label>Receita Incremental</label><span class="val">R$ -134.834</span></div>
+    </div></div>
   </div>
   <div class="layer">
     <div class="layer-label"><span class="dot dot-yellow"></span>Camada 2 — Gráficos Comparativos</div>
     <div class="chart-grid">
       <div class="chart-wrap">
         <div class="chart-title">Take Rate por CIA (%)</div>
-        <canvas id="chart-cia-tr" height="160"></canvas>
+        <canvas id="chart-cia-tr" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas>
       </div>
       <div class="chart-wrap">
         <div class="chart-title">GMV por CIA (R$)</div>
-        <canvas id="chart-cia-gmv" height="160"></canvas>
+        <canvas id="chart-cia-gmv" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas>
       </div>
     </div>
   </div>
   <div class="layer">
     <div class="layer-label"><span class="dot dot-red"></span>Camada 3 — Provider × CIA: Matriz de Δ Take Rate</div>
     <div class="tbl-wrap">
-      <table id="tbl-cia-prov"></table>
+      <table id="tbl-cia-prov"><thead><tr><th>Provider</th><th class="td-center" colspan="3">LATAM</th><th class="td-center" colspan="3">GOL</th><th class="td-center" colspan="3">AZUL</th><th class="td-center" colspan="3">Outros</th></tr><tr><th></th><th class="td-right">Qtd</th><th class="td-right">%Esp</th><th class="td-center">Δ TR</th><th class="td-right">Qtd</th><th class="td-right">%Esp</th><th class="td-center">Δ TR</th><th class="td-right">Qtd</th><th class="td-right">%Esp</th><th class="td-center">Δ TR</th><th class="td-right">Qtd</th><th class="td-right">%Esp</th><th class="td-center">Δ TR</th></tr></thead><tbody><tr><td><strong>cturis</strong></td><td class="td-right">858</td><td class="td-right">48.0%</td><td class="td-center"><span class="sem-red" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">-0.56 pp</span></td><td class="td-right">10</td><td class="td-right">100.0%</td><td class="td-center">—</td><td class="td-right">5.263</td><td class="td-right">78.1%</td><td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.25 pp</span></td><td class="td-right">120</td><td class="td-right">0.0%</td><td class="td-center">—</td></tr><tr><td><strong>evtur</strong></td><td class="td-right">—</td><td class="td-right">—</td><td class="td-center">—</td><td class="td-right">8</td><td class="td-right">100.0%</td><td class="td-center">—</td><td class="td-right">—</td><td class="td-right">—</td><td class="td-center">—</td><td class="td-right">—</td><td class="td-right">—</td><td class="td-center">—</td></tr><tr><td><strong>flytour</strong></td><td class="td-right">1.323</td><td class="td-right">88.5%</td><td class="td-center"><span class="sem-red" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">-0.25 pp</span></td><td class="td-right">793</td><td class="td-right">83.1%</td><td class="td-center"><span class="sem-grn" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+2.29 pp</span></td><td class="td-right">1.316</td><td class="td-right">87.1%</td><td class="td-center"><span class="sem-grn" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+2.13 pp</span></td><td class="td-right">496</td><td class="td-right">0.0%</td><td class="td-center">—</td></tr><tr><td><strong>patria</strong></td><td class="td-right">4.940</td><td class="td-right">62.6%</td><td class="td-center"><span class="sem-grn" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+2.51 pp</span></td><td class="td-right">4.062</td><td class="td-right">54.6%</td><td class="td-center"><span class="sem-grn" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+2.19 pp</span></td><td class="td-right">4.295</td><td class="td-right">38.0%</td><td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.11 pp</span></td><td class="td-right">21</td><td class="td-right">100.0%</td><td class="td-center">—</td></tr><tr><td><strong>rextur</strong></td><td class="td-right">56</td><td class="td-right">0.0%</td><td class="td-center">—</td><td class="td-right">—</td><td class="td-right">—</td><td class="td-center">—</td><td class="td-right">37</td><td class="td-right">100.0%</td><td class="td-center">—</td><td class="td-right">251</td><td class="td-right">33.5%</td><td class="td-center"><span class="sem-red" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">-0.17 pp</span></td></tr><tr><td><strong>sakura</strong></td><td class="td-right">2.020</td><td class="td-right">41.0%</td><td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.52 pp</span></td><td class="td-right">4.559</td><td class="td-right">63.6%</td><td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.47 pp</span></td><td class="td-right">6.499</td><td class="td-right">50.7%</td><td class="td-center"><span class="sem-red" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">-0.23 pp</span></td><td class="td-right">—</td><td class="td-right">—</td><td class="td-center">—</td></tr></tbody></table>
     </div>
   </div>
 </div>
@@ -321,13 +1406,125 @@
   <div class="layer">
     <div class="layer-label"><span class="dot dot-green"></span>Camada 1 — Resumo por Provider</div>
     <div class="tbl-wrap">
-      <table id="tbl-prov-resumo"></table>
+      <table id="tbl-prov-resumo"><thead><tr><th>Provider</th><th class="td-right">Total Emissões</th><th class="td-right">Credenciais</th><th class="td-right">Alertas</th><th class="td-center">Status</th></tr></thead><tbody><tr><td><strong>cturis</strong></td><td class="td-right">6.251</td><td class="td-right">3</td><td class="td-right">1</td><td class="td-center"><span class="pill pill-red">⚠ 1 alerta(s)</span></td></tr><tr><td><strong>evtur</strong></td><td class="td-right">8</td><td class="td-right">1</td><td class="td-right">0</td><td class="td-center"><span class="pill pill-grn">✓ OK</span></td></tr><tr><td><strong>flytour</strong></td><td class="td-right">3.928</td><td class="td-right">4</td><td class="td-right">2</td><td class="td-center"><span class="pill pill-red">⚠ 2 alerta(s)</span></td></tr><tr><td><strong>patria</strong></td><td class="td-right">13.318</td><td class="td-right">3</td><td class="td-right">1</td><td class="td-center"><span class="pill pill-red">⚠ 1 alerta(s)</span></td></tr><tr><td><strong>rextur</strong></td><td class="td-right">344</td><td class="td-right">1</td><td class="td-right">1</td><td class="td-center"><span class="pill pill-red">⚠ 1 alerta(s)</span></td></tr><tr><td><strong>sakura</strong></td><td class="td-right">13.078</td><td class="td-right">2</td><td class="td-right">0</td><td class="td-center"><span class="pill pill-grn">✓ OK</span></td></tr></tbody></table>
     </div>
   </div>
   <div class="layer">
     <div class="layer-label"><span class="dot dot-yellow"></span>Camada 2 — Detalhe por Credencial</div>
     <div class="tbl-wrap">
-      <table id="tbl-cred"></table>
+      <table id="tbl-cred"><thead><tr><th>Provider</th><th>Credencial</th><th class="td-center">Tipo</th><th class="td-right">Emissões</th><th class="td-right">% Especial</th><th class="td-center">Δ TR</th><th class="td-center">Alerta</th></tr></thead><tbody><tr style="">
+      <td>cturis</td>
+      <td style="font-size:12px;">CTuris Busca (maxmilhas.wcf)</td>
+      <td class="td-center"><span class="pill pill-neu">BUSCA</span></td>
+      <td class="td-right">1.721</td>
+      <td class="td-right">0.0%</td>
+      <td class="td-center">—</td>
+      <td class="td-center"></td>
+    </tr><tr style="">
+      <td>cturis</td>
+      <td style="font-size:12px;">CTuris CotaÃ§Ã£o (maxmilhas.wcf)</td>
+      <td class="td-center"><span class="pill pill-grn">COTAÇÃO</span></td>
+      <td class="td-right">4.450</td>
+      <td class="td-right">100.0%</td>
+      <td class="td-center">—</td>
+      <td class="td-center"></td>
+    </tr><tr style="background:rgba(239,68,68,.05)">
+      <td>cturis</td>
+      <td style="font-size:12px;">Wooba test Cturis Provider</td>
+      <td class="td-center"><span class="pill pill-ylw">TESTE</span></td>
+      <td class="td-right">80</td>
+      <td class="td-right">100.0%</td>
+      <td class="td-center">—</td>
+      <td class="td-center">🚨</td>
+    </tr><tr style="">
+      <td>evtur</td>
+      <td style="font-size:12px;">Evtur CotaÃ§Ã£o (609d24680c9b264c3063f977)</td>
+      <td class="td-center"><span class="pill pill-grn">COTAÇÃO</span></td>
+      <td class="td-right">8</td>
+      <td class="td-right">100.0%</td>
+      <td class="td-center">—</td>
+      <td class="td-center"></td>
+    </tr><tr style="background:rgba(239,68,68,.05)">
+      <td>flytour</td>
+      <td style="font-size:12px;">Flytour Busca emissÃ£o faturado (max.site)</td>
+      <td class="td-center"><span class="pill pill-blu">BUSCA→EMI</span></td>
+      <td class="td-right">67</td>
+      <td class="td-right">100.0%</td>
+      <td class="td-center">—</td>
+      <td class="td-center">🚨</td>
+    </tr><tr style="background:rgba(239,68,68,.05)">
+      <td>flytour</td>
+      <td style="font-size:12px;">Flytour busca (max.site) #Nunca usar na cotaÃ§Ã£o</td>
+      <td class="td-center"><span class="pill pill-red">PROIBIDA</span></td>
+      <td class="td-right">952</td>
+      <td class="td-right">0.0%</td>
+      <td class="td-center">—</td>
+      <td class="td-center">🚨</td>
+    </tr><tr style="">
+      <td>flytour</td>
+      <td style="font-size:12px;">Flytour cotaÃ§Ã£o especial (max.flyespecial)</td>
+      <td class="td-center"><span class="pill pill-grn">COTAÇÃO</span></td>
+      <td class="td-right">2.321</td>
+      <td class="td-right">100.0%</td>
+      <td class="td-center">—</td>
+      <td class="td-center"></td>
+    </tr><tr style="">
+      <td>flytour</td>
+      <td style="font-size:12px;">Flytour cotaÃ§Ã£o especial faturado</td>
+      <td class="td-center"><span class="pill pill-grn">COTAÇÃO</span></td>
+      <td class="td-right">588</td>
+      <td class="td-right">100.0%</td>
+      <td class="td-center">—</td>
+      <td class="td-center"></td>
+    </tr><tr style="">
+      <td>patria</td>
+      <td style="font-size:12px;">Patria - CotaÃ§Ã£o</td>
+      <td class="td-center"><span class="pill pill-grn">COTAÇÃO</span></td>
+      <td class="td-right">6.960</td>
+      <td class="td-right">100.0%</td>
+      <td class="td-center">—</td>
+      <td class="td-center"></td>
+    </tr><tr style="">
+      <td>patria</td>
+      <td style="font-size:12px;">Patria Busca - MAX</td>
+      <td class="td-center"><span class="pill pill-neu">BUSCA</span></td>
+      <td class="td-right">6.316</td>
+      <td class="td-right">0.0%</td>
+      <td class="td-center">—</td>
+      <td class="td-center"></td>
+    </tr><tr style="background:rgba(239,68,68,.05)">
+      <td>patria</td>
+      <td style="font-size:12px;">Patria Busca - MAX - apimaxpatria</td>
+      <td class="td-center"><span class="pill pill-blu">BUSCA→EMI</span></td>
+      <td class="td-right">42</td>
+      <td class="td-right">9.5%</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.49 pp</span></td>
+      <td class="td-center">🚨</td>
+    </tr><tr style="background:rgba(239,68,68,.05)">
+      <td>rextur</td>
+      <td style="font-size:12px;">Rextur busca (116437) #Nunca usar na cotaÃ§Ã£o</td>
+      <td class="td-center"><span class="pill pill-red">PROIBIDA</span></td>
+      <td class="td-right">344</td>
+      <td class="td-right">35.2%</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.77 pp</span></td>
+      <td class="td-center">🚨</td>
+    </tr><tr style="">
+      <td>sakura</td>
+      <td style="font-size:12px;">Sakura - CotaÃ§Ã£o</td>
+      <td class="td-center"><span class="pill pill-grn">COTAÇÃO</span></td>
+      <td class="td-right">7.027</td>
+      <td class="td-right">100.0%</td>
+      <td class="td-center">—</td>
+      <td class="td-center"></td>
+    </tr><tr style="">
+      <td>sakura</td>
+      <td style="font-size:12px;">Sakura - Novo Servidor</td>
+      <td class="td-center"><span class="pill pill-neu">OUTRO</span></td>
+      <td class="td-right">6.051</td>
+      <td class="td-right">0.0%</td>
+      <td class="td-center">—</td>
+      <td class="td-center"></td>
+    </tr></tbody></table>
     </div>
   </div>
 </div>
@@ -336,18 +1533,62 @@
 <div class="tab-panel" id="panel-6">
   <div class="layer">
     <div class="layer-label"><span class="dot dot-green"></span>Camada 1 — Market Share ANAC 2025 vs Mix Airmall</div>
-    <div id="anac-bars"></div>
+    <div id="anac-bars">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+    <div>
+      <div style="font-size:12px;color:var(--txt2);margin-bottom:12px;font-weight:600;">ANAC 2025 — Mercado Doméstico</div>
+      
+        <div class="anac-bar">
+          <div class="label">LATAM</div>
+          <div class="bar-track"><div class="bar-fill" style="width:38.6%;background:#6366f1">38.6%</div></div>
+        </div>
+        <div class="anac-bar">
+          <div class="label">GOL</div>
+          <div class="bar-track"><div class="bar-fill" style="width:31.4%;background:#f97316">31.4%</div></div>
+        </div>
+        <div class="anac-bar">
+          <div class="label">AZUL</div>
+          <div class="bar-track"><div class="bar-fill" style="width:29.8%;background:#3b82f6">29.8%</div></div>
+        </div>
+    </div>
+    <div>
+      <div style="font-size:12px;color:var(--txt2);margin-bottom:12px;font-weight:600;">Airmall — Mix de Emissões</div>
+      
+        <div class="anac-bar">
+          <div class="label">LATAM</div>
+          <div class="bar-track"><div class="bar-fill" style="width:25%;background:#6366f1">25%</div></div>
+        </div>
+        <div class="anac-bar">
+          <div class="label">GOL</div>
+          <div class="bar-track"><div class="bar-fill" style="width:26%;background:#f97316">26%</div></div>
+        </div>
+        <div class="anac-bar">
+          <div class="label">AZUL</div>
+          <div class="bar-track"><div class="bar-fill" style="width:47%;background:#3b82f6">47%</div></div>
+        </div>
+        <div class="anac-bar">
+          <div class="label">Outros</div>
+          <div class="bar-track"><div class="bar-fill" style="width:2%;background:#94a3b8">2%</div></div>
+        </div>
+    </div>
+  </div></div>
   </div>
   <div class="layer">
     <div class="layer-label"><span class="dot dot-yellow"></span>Camada 2 — Penetração por CIA</div>
     <div class="chart-wrap">
       <div class="chart-title">Distribuição de Emissões Airmall vs Mercado</div>
-      <canvas id="chart-anac" height="80"></canvas>
+      <canvas id="chart-anac" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas>
     </div>
   </div>
   <div class="layer">
     <div class="layer-label"><span class="dot dot-red"></span>Camada 3 — Oportunidades Identificadas</div>
-    <div id="anac-oportunidades"></div>
+    <div id="anac-oportunidades"><div style="padding:8px;background:rgba(99,102,241,.08);border-radius:8px;margin-bottom:8px;font-size:13px;">
+      💡 <strong>LATAM</strong> — Airmall tem 25% vs 38.6% do mercado (ANAC). Gap de 13.600000000000001 pp indica oportunidade de crescimento nesta CIA.
+    </div><div style="padding:8px;background:rgba(99,102,241,.08);border-radius:8px;margin-bottom:8px;font-size:13px;">
+      💡 <strong>GOL</strong> — Airmall tem 26% vs 31.4% do mercado (ANAC). Gap de 5.399999999999999 pp indica oportunidade de crescimento nesta CIA.
+    </div><div style="padding:8px;background:rgba(34,197,94,.08);border-radius:8px;margin-bottom:8px;font-size:13px;">
+      📈 <strong>AZUL</strong> — Airmall está 17.2 pp acima do share de mercado. Boa penetração — manter condições comerciais atrativas.
+    </div></div>
   </div>
 </div>
 
@@ -357,13 +1598,373 @@
     <div class="layer-label"><span class="dot dot-green"></span>Camada 1 — Top ADVPs por Volume</div>
     <div class="chart-wrap">
       <div class="chart-title">Top 15 ADVPs — Volume de Emissões</div>
-      <canvas id="chart-advp" height="120"></canvas>
+      <canvas id="chart-advp" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas>
     </div>
   </div>
   <div class="layer">
     <div class="layer-label"><span class="dot dot-yellow"></span>Camada 2 — Ranking com Semáforo</div>
     <div class="tbl-wrap">
-      <table id="tbl-advp"></table>
+      <table id="tbl-advp"><thead><tr><th>ADVP</th><th class="td-right">Emissões</th><th class="td-right">% Especial</th><th class="td-right">GMV</th><th class="td-center">Δ TR</th></tr></thead><tbody><tr>
+      <td>ADVP 1</td>
+      <td class="td-right">1.901</td>
+      <td class="td-right">66.8%</td>
+      <td class="td-right">R$ 4.599.659</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.76 pp</span></td>
+    </tr><tr>
+      <td>ADVP 10</td>
+      <td class="td-right">1.070</td>
+      <td class="td-right">61.8%</td>
+      <td class="td-right">R$ 1.581.723</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.32 pp</span></td>
+    </tr><tr>
+      <td>ADVP 0</td>
+      <td class="td-right">1.056</td>
+      <td class="td-right">62.0%</td>
+      <td class="td-right">R$ 2.730.730</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.43 pp</span></td>
+    </tr><tr>
+      <td>ADVP 4</td>
+      <td class="td-right">998</td>
+      <td class="td-right">62.7%</td>
+      <td class="td-right">R$ 2.034.047</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.34 pp</span></td>
+    </tr><tr>
+      <td>ADVP 2</td>
+      <td class="td-right">985</td>
+      <td class="td-right">66.9%</td>
+      <td class="td-right">R$ 2.368.973</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.52 pp</span></td>
+    </tr><tr>
+      <td>ADVP 7</td>
+      <td class="td-right">937</td>
+      <td class="td-right">61.7%</td>
+      <td class="td-right">R$ 1.587.861</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.72 pp</span></td>
+    </tr><tr>
+      <td>ADVP 28</td>
+      <td class="td-right">831</td>
+      <td class="td-right">61.0%</td>
+      <td class="td-right">R$ 949.061</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.50 pp</span></td>
+    </tr><tr>
+      <td>ADVP 14</td>
+      <td class="td-right">801</td>
+      <td class="td-right">58.6%</td>
+      <td class="td-right">R$ 1.206.798</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.66 pp</span></td>
+    </tr><tr>
+      <td>ADVP 21</td>
+      <td class="td-right">697</td>
+      <td class="td-right">57.8%</td>
+      <td class="td-right">R$ 916.132</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.39 pp</span></td>
+    </tr><tr>
+      <td>ADVP 3</td>
+      <td class="td-right">678</td>
+      <td class="td-right">63.7%</td>
+      <td class="td-right">R$ 1.541.420</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.51 pp</span></td>
+    </tr><tr>
+      <td>ADVP 5</td>
+      <td class="td-right">668</td>
+      <td class="td-right">59.1%</td>
+      <td class="td-right">R$ 1.295.069</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.44 pp</span></td>
+    </tr><tr>
+      <td>ADVP 8</td>
+      <td class="td-right">649</td>
+      <td class="td-right">63.0%</td>
+      <td class="td-right">R$ 1.093.202</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.61 pp</span></td>
+    </tr><tr>
+      <td>ADVP 15</td>
+      <td class="td-right">649</td>
+      <td class="td-right">61.0%</td>
+      <td class="td-right">R$ 946.746</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.69 pp</span></td>
+    </tr><tr>
+      <td>ADVP 29</td>
+      <td class="td-right">642</td>
+      <td class="td-right">59.2%</td>
+      <td class="td-right">R$ 755.332</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.35 pp</span></td>
+    </tr><tr>
+      <td>ADVP 9</td>
+      <td class="td-right">617</td>
+      <td class="td-right">61.9%</td>
+      <td class="td-right">R$ 1.008.412</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.06 pp</span></td>
+    </tr><tr>
+      <td>ADVP 30</td>
+      <td class="td-right">596</td>
+      <td class="td-right">59.7%</td>
+      <td class="td-right">R$ 681.159</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.15 pp</span></td>
+    </tr><tr>
+      <td>ADVP 6</td>
+      <td class="td-right">584</td>
+      <td class="td-right">59.6%</td>
+      <td class="td-right">R$ 1.201.799</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.35 pp</span></td>
+    </tr><tr>
+      <td>ADVP 11</td>
+      <td class="td-right">583</td>
+      <td class="td-right">58.5%</td>
+      <td class="td-right">R$ 894.936</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.16 pp</span></td>
+    </tr><tr>
+      <td>ADVP 22</td>
+      <td class="td-right">572</td>
+      <td class="td-right">60.3%</td>
+      <td class="td-right">R$ 764.944</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.04 pp</span></td>
+    </tr><tr>
+      <td>ADVP 12</td>
+      <td class="td-right">554</td>
+      <td class="td-right">60.3%</td>
+      <td class="td-right">R$ 832.730</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.19 pp</span></td>
+    </tr><tr>
+      <td>ADVP 16</td>
+      <td class="td-right">554</td>
+      <td class="td-right">58.5%</td>
+      <td class="td-right">R$ 757.690</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.24 pp</span></td>
+    </tr><tr>
+      <td>ADVP 18</td>
+      <td class="td-right">525</td>
+      <td class="td-right">58.1%</td>
+      <td class="td-right">R$ 808.890</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.10 pp</span></td>
+    </tr><tr>
+      <td>ADVP 23</td>
+      <td class="td-right">525</td>
+      <td class="td-right">55.8%</td>
+      <td class="td-right">R$ 703.211</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.34 pp</span></td>
+    </tr><tr>
+      <td>ADVP 17</td>
+      <td class="td-right">513</td>
+      <td class="td-right">58.3%</td>
+      <td class="td-right">R$ 711.743</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.63 pp</span></td>
+    </tr><tr>
+      <td>ADVP 31</td>
+      <td class="td-right">506</td>
+      <td class="td-right">56.1%</td>
+      <td class="td-right">R$ 604.195</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.66 pp</span></td>
+    </tr><tr>
+      <td>ADVP 24</td>
+      <td class="td-right">497</td>
+      <td class="td-right">61.2%</td>
+      <td class="td-right">R$ 773.013</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.80 pp</span></td>
+    </tr><tr>
+      <td>ADVP 19</td>
+      <td class="td-right">480</td>
+      <td class="td-right">57.9%</td>
+      <td class="td-right">R$ 661.733</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.78 pp</span></td>
+    </tr><tr>
+      <td>ADVP 32</td>
+      <td class="td-right">456</td>
+      <td class="td-right">53.7%</td>
+      <td class="td-right">R$ 519.462</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.10 pp</span></td>
+    </tr><tr>
+      <td>ADVP 33</td>
+      <td class="td-right">456</td>
+      <td class="td-right">58.6%</td>
+      <td class="td-right">R$ 530.826</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.88 pp</span></td>
+    </tr><tr>
+      <td>ADVP 20</td>
+      <td class="td-right">452</td>
+      <td class="td-right">58.0%</td>
+      <td class="td-right">R$ 669.429</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.98 pp</span></td>
+    </tr><tr>
+      <td>ADVP 25</td>
+      <td class="td-right">449</td>
+      <td class="td-right">54.6%</td>
+      <td class="td-right">R$ 621.342</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.72 pp</span></td>
+    </tr><tr>
+      <td>ADVP 13</td>
+      <td class="td-right">445</td>
+      <td class="td-right">58.9%</td>
+      <td class="td-right">R$ 766.354</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.09 pp</span></td>
+    </tr><tr>
+      <td>ADVP 26</td>
+      <td class="td-right">442</td>
+      <td class="td-right">55.9%</td>
+      <td class="td-right">R$ 586.424</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.94 pp</span></td>
+    </tr><tr>
+      <td>ADVP 27</td>
+      <td class="td-right">416</td>
+      <td class="td-right">58.2%</td>
+      <td class="td-right">R$ 558.610</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.44 pp</span></td>
+    </tr><tr>
+      <td>ADVP 34</td>
+      <td class="td-right">401</td>
+      <td class="td-right">60.1%</td>
+      <td class="td-right">R$ 545.904</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.62 pp</span></td>
+    </tr><tr>
+      <td>ADVP 35</td>
+      <td class="td-right">390</td>
+      <td class="td-right">53.3%</td>
+      <td class="td-right">R$ 440.351</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.15 pp</span></td>
+    </tr><tr>
+      <td>ADVP 38</td>
+      <td class="td-right">361</td>
+      <td class="td-right">56.5%</td>
+      <td class="td-right">R$ 429.446</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.58 pp</span></td>
+    </tr><tr>
+      <td>ADVP 36</td>
+      <td class="td-right">338</td>
+      <td class="td-right">51.8%</td>
+      <td class="td-right">R$ 426.879</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+2.08 pp</span></td>
+    </tr><tr>
+      <td>ADVP 42</td>
+      <td class="td-right">320</td>
+      <td class="td-right">59.1%</td>
+      <td class="td-right">R$ 387.304</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.52 pp</span></td>
+    </tr><tr>
+      <td>ADVP 37</td>
+      <td class="td-right">315</td>
+      <td class="td-right">61.0%</td>
+      <td class="td-right">R$ 414.989</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.56 pp</span></td>
+    </tr><tr>
+      <td>ADVP 40</td>
+      <td class="td-right">314</td>
+      <td class="td-right">58.6%</td>
+      <td class="td-right">R$ 372.653</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.05 pp</span></td>
+    </tr><tr>
+      <td>ADVP 43</td>
+      <td class="td-right">294</td>
+      <td class="td-right">57.5%</td>
+      <td class="td-right">R$ 393.273</td>
+      <td class="td-center"><span class="sem-red" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">-0.14 pp</span></td>
+    </tr><tr>
+      <td>ADVP 41</td>
+      <td class="td-right">273</td>
+      <td class="td-right">61.5%</td>
+      <td class="td-right">R$ 338.233</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.10 pp</span></td>
+    </tr><tr>
+      <td>ADVP 39</td>
+      <td class="td-right">269</td>
+      <td class="td-right">58.7%</td>
+      <td class="td-right">R$ 323.831</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.98 pp</span></td>
+    </tr><tr>
+      <td>ADVP 47</td>
+      <td class="td-right">250</td>
+      <td class="td-right">53.2%</td>
+      <td class="td-right">R$ 333.458</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.38 pp</span></td>
+    </tr><tr>
+      <td>ADVP 44</td>
+      <td class="td-right">248</td>
+      <td class="td-right">60.1%</td>
+      <td class="td-right">R$ 301.569</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.93 pp</span></td>
+    </tr><tr>
+      <td>ADVP 48</td>
+      <td class="td-right">247</td>
+      <td class="td-right">60.7%</td>
+      <td class="td-right">R$ 295.358</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.49 pp</span></td>
+    </tr><tr>
+      <td>ADVP 45</td>
+      <td class="td-right">244</td>
+      <td class="td-right">64.8%</td>
+      <td class="td-right">R$ 275.686</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.39 pp</span></td>
+    </tr><tr>
+      <td>ADVP 46</td>
+      <td class="td-right">223</td>
+      <td class="td-right">58.7%</td>
+      <td class="td-right">R$ 281.643</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.56 pp</span></td>
+    </tr><tr>
+      <td>ADVP 49</td>
+      <td class="td-right">223</td>
+      <td class="td-right">63.7%</td>
+      <td class="td-right">R$ 280.355</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.47 pp</span></td>
+    </tr><tr>
+      <td>ADVP 50</td>
+      <td class="td-right">192</td>
+      <td class="td-right">64.6%</td>
+      <td class="td-right">R$ 223.508</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.99 pp</span></td>
+    </tr><tr>
+      <td>ADVP 60</td>
+      <td class="td-right">191</td>
+      <td class="td-right">55.5%</td>
+      <td class="td-right">R$ 254.024</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.60 pp</span></td>
+    </tr><tr>
+      <td>ADVP 53</td>
+      <td class="td-right">189</td>
+      <td class="td-right">61.9%</td>
+      <td class="td-right">R$ 244.352</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.99 pp</span></td>
+    </tr><tr>
+      <td>ADVP 56</td>
+      <td class="td-right">188</td>
+      <td class="td-right">55.3%</td>
+      <td class="td-right">R$ 255.896</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.23 pp</span></td>
+    </tr><tr>
+      <td>ADVP 54</td>
+      <td class="td-right">185</td>
+      <td class="td-right">50.8%</td>
+      <td class="td-right">R$ 249.137</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.60 pp</span></td>
+    </tr><tr>
+      <td>ADVP 51</td>
+      <td class="td-right">184</td>
+      <td class="td-right">53.3%</td>
+      <td class="td-right">R$ 241.674</td>
+      <td class="td-center"><span class="sem-grn" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+2.19 pp</span></td>
+    </tr><tr>
+      <td>ADVP 52</td>
+      <td class="td-right">176</td>
+      <td class="td-right">53.4%</td>
+      <td class="td-right">R$ 245.445</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.63 pp</span></td>
+    </tr><tr>
+      <td>ADVP 57</td>
+      <td class="td-right">174</td>
+      <td class="td-right">60.9%</td>
+      <td class="td-right">R$ 215.002</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+0.70 pp</span></td>
+    </tr><tr>
+      <td>ADVP 58</td>
+      <td class="td-right">174</td>
+      <td class="td-right">59.2%</td>
+      <td class="td-right">R$ 257.062</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.22 pp</span></td>
+    </tr><tr>
+      <td>ADVP 59</td>
+      <td class="td-right">173</td>
+      <td class="td-right">54.3%</td>
+      <td class="td-right">R$ 232.018</td>
+      <td class="td-center"><span class="sem-ylw" style="padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600;">+1.18 pp</span></td>
+    </tr></tbody></table>
     </div>
   </div>
 </div>
@@ -374,7 +1975,7 @@
 // ============================================================
 // DATA
 // ============================================================
-const D = {"meta": {"today": "2026-04-13", "same_dlw": "2026-04-06", "period_start": "2026-01-01", "period_end": "2026-04-13", "generated_at": "13/04/2026 15:04"}, "painel": {"hoje": {"total": 128, "cnt_esp": 90, "pct_esp": 70.3, "gmv": 169994.38, "receita": 27251.22, "take_rate": 7.77, "take_rate_pub": 8.61, "delta_tr": -0.84, "rec_incr": 22065.46, "incentivo_excl": 5699.2}, "sem_ant": {"total": 408, "cnt_esp": 264, "pct_esp": 64.7, "gmv": 377309.52, "receita": 50631.69, "take_rate": 5.69, "take_rate_pub": 7.32, "delta_tr": -1.63, "rec_incr": 30660.9, "incentivo_excl": 12243.92}, "media7d": {"total": 366.57, "cnt_esp": 242.0, "pct_esp": 9.43, "gmv": 388602.78, "receita": 56013.97, "take_rate": 1.03, "take_rate_pub": 1.1, "delta_tr": -0.07, "rec_incr": 38230.01, "incentivo_excl": 12865.64}, "periodo": {"total": 36927, "cnt_esp": 21626, "pct_esp": 58.6, "gmv": 32644152.86, "receita": 4128948.89, "take_rate": 8.35, "take_rate_pub": 7.26, "delta_tr": 1.08, "rec_incr": 2116150.41, "incentivo_excl": 1023321.86}}, "daily": [{"date": "2026-01-01", "total": 409, "pct_esp": 63.3, "gmv": 433246.42, "receita": 62224.22, "delta_tr": 0.57}, {"date": "2026-01-02", "total": 538, "pct_esp": 61.7, "gmv": 521781.13, "receita": 73177.64, "delta_tr": 0.2}, {"date": "2026-01-03", "total": 495, "pct_esp": 60.0, "gmv": 552772.37, "receita": 83150.19, "delta_tr": 1.4}, {"date": "2026-01-04", "total": 377, "pct_esp": 59.4, "gmv": 368939.65, "receita": 56503.06, "delta_tr": 2.05}, {"date": "2026-01-05", "total": 539, "pct_esp": 62.3, "gmv": 576777.22, "receita": 73851.43, "delta_tr": 0.41}, {"date": "2026-01-06", "total": 428, "pct_esp": 59.8, "gmv": 454801.44, "receita": 55437.31, "delta_tr": -1.02}, {"date": "2026-01-07", "total": 402, "pct_esp": 67.2, "gmv": 420989.06, "receita": 51459.27, "delta_tr": -0.54}, {"date": "2026-01-08", "total": 591, "pct_esp": 61.3, "gmv": 543444.5, "receita": 63119.35, "delta_tr": -2.17}, {"date": "2026-01-09", "total": 696, "pct_esp": 61.6, "gmv": 661964.25, "receita": 80942.68, "delta_tr": -1.55}, {"date": "2026-01-10", "total": 574, "pct_esp": 60.5, "gmv": 529486.18, "receita": 62495.72, "delta_tr": -1.21}, {"date": "2026-01-11", "total": 560, "pct_esp": 57.0, "gmv": 459517.04, "receita": 55759.86, "delta_tr": -1.25}, {"date": "2026-01-12", "total": 376, "pct_esp": 58.5, "gmv": 307719.43, "receita": 38071.39, "delta_tr": -0.41}, {"date": "2026-01-13", "total": 358, "pct_esp": 62.8, "gmv": 287793.92, "receita": 35430.02, "delta_tr": 3.0}, {"date": "2026-01-14", "total": 471, "pct_esp": 64.1, "gmv": 475474.65, "receita": 54971.55, "delta_tr": 0.9}, {"date": "2026-01-15", "total": 487, "pct_esp": 60.8, "gmv": 432868.07, "receita": 49424.57, "delta_tr": 1.85}, {"date": "2026-01-16", "total": 438, "pct_esp": 57.3, "gmv": 339267.04, "receita": 43828.28, "delta_tr": 2.57}, {"date": "2026-01-17", "total": 430, "pct_esp": 58.1, "gmv": 348769.93, "receita": 42394.73, "delta_tr": 1.47}, {"date": "2026-01-18", "total": 368, "pct_esp": 55.2, "gmv": 258397.5, "receita": 32116.42, "delta_tr": 2.72}, {"date": "2026-01-19", "total": 376, "pct_esp": 54.8, "gmv": 320234.68, "receita": 38773.67, "delta_tr": 2.46}, {"date": "2026-01-20", "total": 443, "pct_esp": 57.8, "gmv": 385546.99, "receita": 46289.51, "delta_tr": 1.09}, {"date": "2026-01-21", "total": 314, "pct_esp": 51.9, "gmv": 229447.24, "receita": 26946.59, "delta_tr": 1.55}, {"date": "2026-01-22", "total": 364, "pct_esp": 56.9, "gmv": 342658.88, "receita": 38739.5, "delta_tr": 2.1}, {"date": "2026-01-23", "total": 311, "pct_esp": 47.6, "gmv": 186268.1, "receita": 20766.09, "delta_tr": 1.27}, {"date": "2026-01-24", "total": 244, "pct_esp": 55.7, "gmv": 203757.25, "receita": 22518.46, "delta_tr": 1.37}, {"date": "2026-01-25", "total": 290, "pct_esp": 54.8, "gmv": 236284.09, "receita": 26385.69, "delta_tr": 2.3}, {"date": "2026-01-26", "total": 352, "pct_esp": 61.1, "gmv": 333352.93, "receita": 35301.53, "delta_tr": 0.37}, {"date": "2026-01-27", "total": 372, "pct_esp": 65.3, "gmv": 353702.08, "receita": 38863.17, "delta_tr": 0.68}, {"date": "2026-01-28", "total": 362, "pct_esp": 68.8, "gmv": 378096.49, "receita": 40290.35, "delta_tr": 0.81}, {"date": "2026-01-29", "total": 298, "pct_esp": 65.1, "gmv": 318998.57, "receita": 35512.97, "delta_tr": 0.54}, {"date": "2026-01-30", "total": 284, "pct_esp": 62.3, "gmv": 305389.12, "receita": 34681.35, "delta_tr": 1.13}, {"date": "2026-01-31", "total": 246, "pct_esp": 62.2, "gmv": 216079.0, "receita": 24876.04, "delta_tr": 0.32}, {"date": "2026-02-01", "total": 188, "pct_esp": 59.6, "gmv": 191620.32, "receita": 24472.86, "delta_tr": 2.99}, {"date": "2026-02-02", "total": 335, "pct_esp": 61.2, "gmv": 362497.24, "receita": 46815.58, "delta_tr": 2.99}, {"date": "2026-02-03", "total": 256, "pct_esp": 60.9, "gmv": 237954.88, "receita": 32110.58, "delta_tr": 1.76}, {"date": "2026-02-04", "total": 292, "pct_esp": 62.7, "gmv": 276885.85, "receita": 35365.24, "delta_tr": 3.48}, {"date": "2026-02-05", "total": 333, "pct_esp": 63.7, "gmv": 279714.62, "receita": 33991.9, "delta_tr": 1.97}, {"date": "2026-02-06", "total": 331, "pct_esp": 56.8, "gmv": 256995.15, "receita": 32930.05, "delta_tr": 3.43}, {"date": "2026-02-07", "total": 302, "pct_esp": 64.2, "gmv": 245598.94, "receita": 30164.71, "delta_tr": 2.67}, {"date": "2026-02-08", "total": 305, "pct_esp": 65.2, "gmv": 319624.64, "receita": 40994.6, "delta_tr": 2.72}, {"date": "2026-02-09", "total": 254, "pct_esp": 60.6, "gmv": 172553.21, "receita": 21262.05, "delta_tr": 0.96}, {"date": "2026-02-10", "total": 352, "pct_esp": 57.4, "gmv": 308327.93, "receita": 37053.26, "delta_tr": 1.03}, {"date": "2026-02-11", "total": 292, "pct_esp": 57.2, "gmv": 261628.22, "receita": 30788.68, "delta_tr": 0.55}, {"date": "2026-02-12", "total": 348, "pct_esp": 60.9, "gmv": 302208.81, "receita": 35273.06, "delta_tr": 0.85}, {"date": "2026-02-13", "total": 330, "pct_esp": 69.1, "gmv": 330560.89, "receita": 40816.08, "delta_tr": -1.77}, {"date": "2026-02-14", "total": 277, "pct_esp": 57.4, "gmv": 270003.35, "receita": 34901.31, "delta_tr": -2.42}, {"date": "2026-02-15", "total": 335, "pct_esp": 64.2, "gmv": 310708.03, "receita": 39958.0, "delta_tr": -2.22}, {"date": "2026-02-16", "total": 395, "pct_esp": 64.1, "gmv": 466619.2, "receita": 59877.49, "delta_tr": -2.14}, {"date": "2026-02-17", "total": 365, "pct_esp": 59.5, "gmv": 270905.47, "receita": 32666.23, "delta_tr": -1.95}, {"date": "2026-02-18", "total": 380, "pct_esp": 65.5, "gmv": 336525.66, "receita": 41317.73, "delta_tr": -2.2}, {"date": "2026-02-19", "total": 516, "pct_esp": 60.3, "gmv": 493779.34, "receita": 62155.4, "delta_tr": -2.01}, {"date": "2026-02-20", "total": 345, "pct_esp": 62.6, "gmv": 345013.34, "receita": 46479.75, "delta_tr": 1.19}, {"date": "2026-02-21", "total": 242, "pct_esp": 50.0, "gmv": 207751.48, "receita": 28966.92, "delta_tr": 3.33}, {"date": "2026-02-22", "total": 263, "pct_esp": 54.8, "gmv": 192755.56, "receita": 26758.01, "delta_tr": 4.08}, {"date": "2026-02-23", "total": 363, "pct_esp": 60.1, "gmv": 274043.65, "receita": 36182.52, "delta_tr": 6.05}, {"date": "2026-02-24", "total": 213, "pct_esp": 58.2, "gmv": 203913.38, "receita": 27342.19, "delta_tr": 6.64}, {"date": "2026-02-25", "total": 397, "pct_esp": 52.1, "gmv": 269912.03, "receita": 33188.4, "delta_tr": 5.71}, {"date": "2026-02-26", "total": 335, "pct_esp": 57.6, "gmv": 232808.72, "receita": 27507.51, "delta_tr": 5.58}, {"date": "2026-02-27", "total": 347, "pct_esp": 62.8, "gmv": 321266.43, "receita": 38919.43, "delta_tr": 2.77}, {"date": "2026-02-28", "total": 300, "pct_esp": 61.7, "gmv": 253895.75, "receita": 31182.84, "delta_tr": 3.2}, {"date": "2026-03-01", "total": 301, "pct_esp": 50.5, "gmv": 195667.28, "receita": 24602.91, "delta_tr": 2.51}, {"date": "2026-03-02", "total": 371, "pct_esp": 59.0, "gmv": 285669.58, "receita": 36046.51, "delta_tr": 0.58}, {"date": "2026-03-03", "total": 429, "pct_esp": 56.9, "gmv": 340049.31, "receita": 41049.19, "delta_tr": 2.47}, {"date": "2026-03-04", "total": 334, "pct_esp": 60.5, "gmv": 260851.29, "receita": 30802.46, "delta_tr": 0.7}, {"date": "2026-03-05", "total": 341, "pct_esp": 51.3, "gmv": 247394.42, "receita": 28087.21, "delta_tr": 1.81}, {"date": "2026-03-06", "total": 343, "pct_esp": 47.8, "gmv": 237484.55, "receita": 27348.45, "delta_tr": 2.57}, {"date": "2026-03-07", "total": 280, "pct_esp": 50.7, "gmv": 233596.04, "receita": 29042.93, "delta_tr": 2.61}, {"date": "2026-03-08", "total": 241, "pct_esp": 45.2, "gmv": 160802.29, "receita": 18883.65, "delta_tr": 3.46}, {"date": "2026-03-09", "total": 266, "pct_esp": 51.5, "gmv": 263935.0, "receita": 34032.85, "delta_tr": 2.77}, {"date": "2026-03-10", "total": 321, "pct_esp": 52.6, "gmv": 258107.23, "receita": 33528.21, "delta_tr": 2.35}, {"date": "2026-03-11", "total": 207, "pct_esp": 39.6, "gmv": 126614.18, "receita": 16533.18, "delta_tr": 2.82}, {"date": "2026-03-12", "total": 157, "pct_esp": 36.9, "gmv": 100540.06, "receita": 11885.99, "delta_tr": 1.92}, {"date": "2026-03-13", "total": 290, "pct_esp": 52.4, "gmv": 270030.99, "receita": 32247.51, "delta_tr": 1.71}, {"date": "2026-03-14", "total": 321, "pct_esp": 56.1, "gmv": 270882.74, "receita": 33514.37, "delta_tr": 2.99}, {"date": "2026-03-15", "total": 366, "pct_esp": 53.3, "gmv": 276296.42, "receita": 34301.49, "delta_tr": 2.84}, {"date": "2026-03-16", "total": 348, "pct_esp": 53.4, "gmv": 236771.48, "receita": 28568.12, "delta_tr": 2.23}, {"date": "2026-03-17", "total": 306, "pct_esp": 57.2, "gmv": 306433.37, "receita": 37759.87, "delta_tr": 2.58}, {"date": "2026-03-18", "total": 318, "pct_esp": 60.4, "gmv": 314476.15, "receita": 39443.4, "delta_tr": 1.99}, {"date": "2026-03-19", "total": 269, "pct_esp": 63.2, "gmv": 285411.6, "receita": 37088.49, "delta_tr": 1.93}, {"date": "2026-03-20", "total": 192, "pct_esp": 57.8, "gmv": 206863.64, "receita": 25968.83, "delta_tr": 2.16}, {"date": "2026-03-21", "total": 232, "pct_esp": 57.3, "gmv": 197439.35, "receita": 24701.43, "delta_tr": 2.04}, {"date": "2026-03-22", "total": 171, "pct_esp": 54.4, "gmv": 139443.18, "receita": 17732.85, "delta_tr": 3.74}, {"date": "2026-03-23", "total": 259, "pct_esp": 61.8, "gmv": 279218.19, "receita": 35852.77, "delta_tr": 2.36}, {"date": "2026-03-24", "total": 335, "pct_esp": 55.8, "gmv": 298474.78, "receita": 38501.25, "delta_tr": 1.55}, {"date": "2026-03-25", "total": 323, "pct_esp": 58.2, "gmv": 271868.53, "receita": 34282.29, "delta_tr": 1.95}, {"date": "2026-03-26", "total": 293, "pct_esp": 58.4, "gmv": 294741.6, "receita": 34845.41, "delta_tr": 1.88}, {"date": "2026-03-27", "total": 280, "pct_esp": 53.2, "gmv": 240586.34, "receita": 29729.73, "delta_tr": 1.56}, {"date": "2026-03-28", "total": 304, "pct_esp": 58.9, "gmv": 250418.63, "receita": 31608.24, "delta_tr": 1.57}, {"date": "2026-03-29", "total": 248, "pct_esp": 50.0, "gmv": 182307.0, "receita": 23749.95, "delta_tr": 2.74}, {"date": "2026-03-30", "total": 333, "pct_esp": 59.2, "gmv": 279975.2, "receita": 35401.28, "delta_tr": 3.5}, {"date": "2026-03-31", "total": 607, "pct_esp": 24.2, "gmv": 199198.82, "receita": 24296.6, "delta_tr": 3.79}, {"date": "2026-04-01", "total": 610, "pct_esp": 32.1, "gmv": 263414.95, "receita": 39685.66, "delta_tr": 3.68}, {"date": "2026-04-02", "total": 528, "pct_esp": 69.7, "gmv": 543097.88, "receita": 70782.84, "delta_tr": -2.6}, {"date": "2026-04-03", "total": 682, "pct_esp": 62.8, "gmv": 629229.81, "receita": 81581.11, "delta_tr": -1.81}, {"date": "2026-04-04", "total": 510, "pct_esp": 63.7, "gmv": 432038.38, "receita": 57464.69, "delta_tr": -0.68}, {"date": "2026-04-05", "total": 453, "pct_esp": 62.5, "gmv": 387396.34, "receita": 51522.69, "delta_tr": -1.89}, {"date": "2026-04-06", "total": 408, "pct_esp": 64.7, "gmv": 377309.52, "receita": 50631.69, "delta_tr": -1.63}, {"date": "2026-04-07", "total": 494, "pct_esp": 66.0, "gmv": 480739.29, "receita": 64443.43, "delta_tr": -1.53}, {"date": "2026-04-08", "total": 417, "pct_esp": 67.9, "gmv": 422957.3, "receita": 62924.7, "delta_tr": -0.45}, {"date": "2026-04-09", "total": 335, "pct_esp": 67.5, "gmv": 379948.81, "receita": 51319.22, "delta_tr": -1.05}, {"date": "2026-04-10", "total": 478, "pct_esp": 65.7, "gmv": 496593.45, "receita": 68628.39, "delta_tr": -1.0}, {"date": "2026-04-11", "total": 336, "pct_esp": 62.5, "gmv": 342374.27, "receita": 52895.49, "delta_tr": 0.77}, {"date": "2026-04-12", "total": 378, "pct_esp": 64.8, "gmv": 427611.93, "receita": 64635.35, "delta_tr": 0.79}, {"date": "2026-04-13", "total": 128, "pct_esp": 70.3, "gmv": 169994.38, "receita": 27251.22, "delta_tr": -0.84}], "por_cia": {"LATAM": {"total": 9197, "cnt_esp": 5505, "pct_esp": 59.9, "gmv": 9120530.12, "receita": 1275724.26, "take_rate": 9.04, "take_rate_pub": 7.32, "delta_tr": 1.72, "rec_incr": 761717.17, "incentivo_excl": 431945.15}, "GOL": {"total": 9432, "cnt_esp": 5794, "pct_esp": 61.4, "gmv": 8448110.84, "receita": 1127864.55, "take_rate": 8.77, "take_rate_pub": 7.36, "delta_tr": 1.41, "rec_incr": 669084.16, "incentivo_excl": 370759.9}, "AZUL": {"total": 17410, "cnt_esp": 10222, "pct_esp": 58.7, "gmv": 14725197.12, "receita": 1711799.03, "take_rate": 7.78, "take_rate_pub": 7.62, "delta_tr": 0.16, "rec_incr": 820183.09, "incentivo_excl": 220616.81}, "Outros": {"total": 888, "cnt_esp": 105, "pct_esp": 11.8, "gmv": 350314.78, "receita": 13561.05, "take_rate": 3.98, "take_rate_pub": 3.31, "delta_tr": 0.67, "rec_incr": -134834.01, "incentivo_excl": 0.0}}, "bvse_cia": [{"cia": "LATAM", "total": 9197, "pct_esp": 59.9, "gmv_esp": 9120530.12, "tr_pub": 7.32, "tr_esp": 9.04, "delta_tr": 1.72}, {"cia": "GOL", "total": 9432, "pct_esp": 61.4, "gmv_esp": 8448110.84, "tr_pub": 7.36, "tr_esp": 8.77, "delta_tr": 1.41}, {"cia": "AZUL", "total": 17410, "pct_esp": 58.7, "gmv_esp": 14725197.12, "tr_pub": 7.62, "tr_esp": 7.78, "delta_tr": 0.16}, {"cia": "Outros", "total": 888, "pct_esp": 11.8, "gmv_esp": 350314.78, "tr_pub": 3.31, "tr_esp": 3.98, "delta_tr": 0.67}], "prov_cia": [{"provider": "cturis", "LATAM_cnt": 858, "LATAM_pct_esp": 48.0, "LATAM_delta_tr": -0.56, "GOL_cnt": 10, "GOL_pct_esp": 100.0, "GOL_delta_tr": null, "AZUL_cnt": 5263, "AZUL_pct_esp": 78.1, "AZUL_delta_tr": 0.25, "Outros_cnt": 120, "Outros_pct_esp": 0.0, "Outros_delta_tr": null}, {"provider": "evtur", "LATAM_cnt": 0, "LATAM_pct_esp": 0, "LATAM_delta_tr": null, "GOL_cnt": 8, "GOL_pct_esp": 100.0, "GOL_delta_tr": null, "AZUL_cnt": 0, "AZUL_pct_esp": 0, "AZUL_delta_tr": null, "Outros_cnt": 0, "Outros_pct_esp": 0, "Outros_delta_tr": null}, {"provider": "flytour", "LATAM_cnt": 1323, "LATAM_pct_esp": 88.5, "LATAM_delta_tr": -0.25, "GOL_cnt": 793, "GOL_pct_esp": 83.1, "GOL_delta_tr": 2.29, "AZUL_cnt": 1316, "AZUL_pct_esp": 87.1, "AZUL_delta_tr": 2.13, "Outros_cnt": 496, "Outros_pct_esp": 0.0, "Outros_delta_tr": null}, {"provider": "patria", "LATAM_cnt": 4940, "LATAM_pct_esp": 62.6, "LATAM_delta_tr": 2.51, "GOL_cnt": 4062, "GOL_pct_esp": 54.6, "GOL_delta_tr": 2.19, "AZUL_cnt": 4295, "AZUL_pct_esp": 38.0, "AZUL_delta_tr": 0.11, "Outros_cnt": 21, "Outros_pct_esp": 100.0, "Outros_delta_tr": null}, {"provider": "rextur", "LATAM_cnt": 56, "LATAM_pct_esp": 0.0, "LATAM_delta_tr": null, "GOL_cnt": 0, "GOL_pct_esp": 0, "GOL_delta_tr": null, "AZUL_cnt": 37, "AZUL_pct_esp": 100.0, "AZUL_delta_tr": null, "Outros_cnt": 251, "Outros_pct_esp": 33.5, "Outros_delta_tr": -0.17}, {"provider": "sakura", "LATAM_cnt": 2020, "LATAM_pct_esp": 41.0, "LATAM_delta_tr": 1.52, "GOL_cnt": 4559, "GOL_pct_esp": 63.6, "GOL_delta_tr": 0.47, "AZUL_cnt": 6499, "AZUL_pct_esp": 50.7, "AZUL_delta_tr": -0.23, "Outros_cnt": 0, "Outros_pct_esp": 0, "Outros_delta_tr": null}], "hoje_busca": [{"cia": "LATAM", "provider": "patria", "qtd": 11, "pct_cia": 91.7, "tr": 9.85}, {"cia": "LATAM", "provider": "sakura", "qtd": 1, "pct_cia": 8.3, "tr": 8.39}, {"cia": "GOL", "provider": "patria", "qtd": 10, "pct_cia": 100.0, "tr": 8.17}, {"cia": "AZUL", "provider": "patria", "qtd": 11, "pct_cia": 68.8, "tr": 8.04}, {"cia": "AZUL", "provider": "sakura", "qtd": 5, "pct_cia": 31.2, "tr": 8.05}], "hoje_emi": [{"cia": "LATAM", "provider": "patria", "tipo": "ESPECIAL", "qtd": 13, "pct_cia": 38.2, "tr": -0.6}, {"cia": "LATAM", "provider": "patria", "tipo": "PÚBLICA", "qtd": 11, "pct_cia": 32.4, "tr": 9.85}, {"cia": "LATAM", "provider": "sakura", "tipo": "ESPECIAL", "qtd": 9, "pct_cia": 26.5, "tr": 8.17}, {"cia": "LATAM", "provider": "sakura", "tipo": "PÚBLICA", "qtd": 1, "pct_cia": 2.9, "tr": 8.39}, {"cia": "GOL", "provider": "patria", "tipo": "ESPECIAL", "qtd": 1, "pct_cia": 2.4, "tr": 21.66}, {"cia": "GOL", "provider": "patria", "tipo": "PÚBLICA", "qtd": 10, "pct_cia": 23.8, "tr": 8.17}, {"cia": "GOL", "provider": "sakura", "tipo": "ESPECIAL", "qtd": 31, "pct_cia": 73.8, "tr": 7.47}, {"cia": "AZUL", "provider": "cturis", "tipo": "ESPECIAL", "qtd": 6, "pct_cia": 11.5, "tr": 11.1}, {"cia": "AZUL", "provider": "patria", "tipo": "ESPECIAL", "qtd": 2, "pct_cia": 3.8, "tr": 2.57}, {"cia": "AZUL", "provider": "patria", "tipo": "PÚBLICA", "qtd": 11, "pct_cia": 21.2, "tr": 8.04}, {"cia": "AZUL", "provider": "sakura", "tipo": "ESPECIAL", "qtd": 28, "pct_cia": 53.8, "tr": 11.02}, {"cia": "AZUL", "provider": "sakura", "tipo": "PÚBLICA", "qtd": 5, "pct_cia": 9.6, "tr": 8.05}], "cred_data": [{"provider": "cturis", "credential": "CTuris Busca (maxmilhas.wcf)", "tipo": "BUSCA", "total": 1721, "pct_esp": 0.0, "delta_tr": null, "alerta": false}, {"provider": "cturis", "credential": "CTuris CotaÃ§Ã£o (maxmilhas.wcf)", "tipo": "COTAÇÃO", "total": 4450, "pct_esp": 100.0, "delta_tr": null, "alerta": false}, {"provider": "cturis", "credential": "Wooba test Cturis Provider", "tipo": "TESTE", "total": 80, "pct_esp": 100.0, "delta_tr": null, "alerta": true}, {"provider": "evtur", "credential": "Evtur CotaÃ§Ã£o (609d24680c9b264c3063f977)", "tipo": "COTAÇÃO", "total": 8, "pct_esp": 100.0, "delta_tr": null, "alerta": false}, {"provider": "flytour", "credential": "Flytour Busca emissÃ£o faturado (max.site)", "tipo": "BUSCA", "total": 67, "pct_esp": 100.0, "delta_tr": null, "alerta": true}, {"provider": "flytour", "credential": "Flytour busca (max.site) #Nunca usar na cotaÃ§Ã£o", "tipo": "PROIBIDA", "total": 952, "pct_esp": 0.0, "delta_tr": null, "alerta": true}, {"provider": "flytour", "credential": "Flytour cotaÃ§Ã£o especial (max.flyespecial)", "tipo": "COTAÇÃO", "total": 2321, "pct_esp": 100.0, "delta_tr": null, "alerta": false}, {"provider": "flytour", "credential": "Flytour cotaÃ§Ã£o especial faturado", "tipo": "COTAÇÃO", "total": 588, "pct_esp": 100.0, "delta_tr": null, "alerta": false}, {"provider": "patria", "credential": "Patria - CotaÃ§Ã£o", "tipo": "COTAÇÃO", "total": 6960, "pct_esp": 100.0, "delta_tr": null, "alerta": false}, {"provider": "patria", "credential": "Patria Busca - MAX", "tipo": "BUSCA", "total": 6316, "pct_esp": 0.0, "delta_tr": null, "alerta": false}, {"provider": "patria", "credential": "Patria Busca - MAX - apimaxpatria", "tipo": "BUSCA", "total": 42, "pct_esp": 9.5, "delta_tr": 1.49, "alerta": true}, {"provider": "rextur", "credential": "Rextur busca (116437) #Nunca usar na cotaÃ§Ã£o", "tipo": "PROIBIDA", "total": 344, "pct_esp": 35.2, "delta_tr": 0.77, "alerta": true}, {"provider": "sakura", "credential": "Sakura - CotaÃ§Ã£o", "tipo": "COTAÇÃO", "total": 7027, "pct_esp": 100.0, "delta_tr": null, "alerta": false}, {"provider": "sakura", "credential": "Sakura - Novo Servidor", "tipo": "OUTRO", "total": 6051, "pct_esp": 0.0, "delta_tr": null, "alerta": false}], "advp_data": [{"advp": "1", "total": 1901, "pct_esp": 66.8, "gmv": 4599659.19, "delta_tr": 0.76}, {"advp": "10", "total": 1070, "pct_esp": 61.8, "gmv": 1581723.15, "delta_tr": 0.32}, {"advp": "0", "total": 1056, "pct_esp": 62.0, "gmv": 2730729.58, "delta_tr": 0.43}, {"advp": "4", "total": 998, "pct_esp": 62.7, "gmv": 2034047.16, "delta_tr": 1.34}, {"advp": "2", "total": 985, "pct_esp": 66.9, "gmv": 2368972.59, "delta_tr": 1.52}, {"advp": "7", "total": 937, "pct_esp": 61.7, "gmv": 1587861.25, "delta_tr": 0.72}, {"advp": "28", "total": 831, "pct_esp": 61.0, "gmv": 949060.78, "delta_tr": 1.5}, {"advp": "14", "total": 801, "pct_esp": 58.6, "gmv": 1206797.7, "delta_tr": 0.66}, {"advp": "21", "total": 697, "pct_esp": 57.8, "gmv": 916132.37, "delta_tr": 0.39}, {"advp": "3", "total": 678, "pct_esp": 63.7, "gmv": 1541419.88, "delta_tr": 0.51}, {"advp": "5", "total": 668, "pct_esp": 59.1, "gmv": 1295068.71, "delta_tr": 0.44}, {"advp": "8", "total": 649, "pct_esp": 63.0, "gmv": 1093201.69, "delta_tr": 1.61}, {"advp": "15", "total": 649, "pct_esp": 61.0, "gmv": 946746.4, "delta_tr": 0.69}, {"advp": "29", "total": 642, "pct_esp": 59.2, "gmv": 755332.13, "delta_tr": 1.35}, {"advp": "9", "total": 617, "pct_esp": 61.9, "gmv": 1008411.72, "delta_tr": 1.06}, {"advp": "30", "total": 596, "pct_esp": 59.7, "gmv": 681159.05, "delta_tr": 1.15}, {"advp": "6", "total": 584, "pct_esp": 59.6, "gmv": 1201799.04, "delta_tr": 1.35}, {"advp": "11", "total": 583, "pct_esp": 58.5, "gmv": 894936.25, "delta_tr": 1.16}, {"advp": "22", "total": 572, "pct_esp": 60.3, "gmv": 764943.94, "delta_tr": 1.04}, {"advp": "12", "total": 554, "pct_esp": 60.3, "gmv": 832730.35, "delta_tr": 1.19}, {"advp": "16", "total": 554, "pct_esp": 58.5, "gmv": 757690.3, "delta_tr": 0.24}, {"advp": "18", "total": 525, "pct_esp": 58.1, "gmv": 808890.22, "delta_tr": 1.1}, {"advp": "23", "total": 525, "pct_esp": 55.8, "gmv": 703211.08, "delta_tr": 1.34}, {"advp": "17", "total": 513, "pct_esp": 58.3, "gmv": 711743.29, "delta_tr": 0.63}, {"advp": "31", "total": 506, "pct_esp": 56.1, "gmv": 604195.38, "delta_tr": 1.66}, {"advp": "24", "total": 497, "pct_esp": 61.2, "gmv": 773012.61, "delta_tr": 0.8}, {"advp": "19", "total": 480, "pct_esp": 57.9, "gmv": 661732.58, "delta_tr": 0.78}, {"advp": "32", "total": 456, "pct_esp": 53.7, "gmv": 519462.18, "delta_tr": 1.1}, {"advp": "33", "total": 456, "pct_esp": 58.6, "gmv": 530826.33, "delta_tr": 0.88}, {"advp": "20", "total": 452, "pct_esp": 58.0, "gmv": 669428.82, "delta_tr": 0.98}, {"advp": "25", "total": 449, "pct_esp": 54.6, "gmv": 621341.86, "delta_tr": 1.72}, {"advp": "13", "total": 445, "pct_esp": 58.9, "gmv": 766353.65, "delta_tr": 1.09}, {"advp": "26", "total": 442, "pct_esp": 55.9, "gmv": 586424.0, "delta_tr": 0.94}, {"advp": "27", "total": 416, "pct_esp": 58.2, "gmv": 558610.15, "delta_tr": 0.44}, {"advp": "34", "total": 401, "pct_esp": 60.1, "gmv": 545904.26, "delta_tr": 1.62}, {"advp": "35", "total": 390, "pct_esp": 53.3, "gmv": 440351.0, "delta_tr": 0.15}, {"advp": "38", "total": 361, "pct_esp": 56.5, "gmv": 429446.37, "delta_tr": 0.58}, {"advp": "36", "total": 338, "pct_esp": 51.8, "gmv": 426878.8, "delta_tr": 2.08}, {"advp": "42", "total": 320, "pct_esp": 59.1, "gmv": 387303.95, "delta_tr": 1.52}, {"advp": "37", "total": 315, "pct_esp": 61.0, "gmv": 414988.73, "delta_tr": 1.56}, {"advp": "40", "total": 314, "pct_esp": 58.6, "gmv": 372652.72, "delta_tr": 0.05}, {"advp": "43", "total": 294, "pct_esp": 57.5, "gmv": 393272.56, "delta_tr": -0.14}, {"advp": "41", "total": 273, "pct_esp": 61.5, "gmv": 338233.06, "delta_tr": 1.1}, {"advp": "39", "total": 269, "pct_esp": 58.7, "gmv": 323831.35, "delta_tr": 1.98}, {"advp": "47", "total": 250, "pct_esp": 53.2, "gmv": 333457.73, "delta_tr": 1.38}, {"advp": "44", "total": 248, "pct_esp": 60.1, "gmv": 301568.89, "delta_tr": 1.93}, {"advp": "48", "total": 247, "pct_esp": 60.7, "gmv": 295358.33, "delta_tr": 0.49}, {"advp": "45", "total": 244, "pct_esp": 64.8, "gmv": 275685.97, "delta_tr": 1.39}, {"advp": "46", "total": 223, "pct_esp": 58.7, "gmv": 281643.18, "delta_tr": 0.56}, {"advp": "49", "total": 223, "pct_esp": 63.7, "gmv": 280355.29, "delta_tr": 1.47}, {"advp": "50", "total": 192, "pct_esp": 64.6, "gmv": 223507.6, "delta_tr": 0.99}, {"advp": "60", "total": 191, "pct_esp": 55.5, "gmv": 254023.99, "delta_tr": 0.6}, {"advp": "53", "total": 189, "pct_esp": 61.9, "gmv": 244352.37, "delta_tr": 1.99}, {"advp": "56", "total": 188, "pct_esp": 55.3, "gmv": 255895.57, "delta_tr": 1.23}, {"advp": "54", "total": 185, "pct_esp": 50.8, "gmv": 249137.44, "delta_tr": 1.6}, {"advp": "51", "total": 184, "pct_esp": 53.3, "gmv": 241674.16, "delta_tr": 2.19}, {"advp": "52", "total": 176, "pct_esp": 53.4, "gmv": 245445.12, "delta_tr": 0.63}, {"advp": "57", "total": 174, "pct_esp": 60.9, "gmv": 215001.89, "delta_tr": 0.7}, {"advp": "58", "total": 174, "pct_esp": 59.2, "gmv": 257062.01, "delta_tr": 1.22}, {"advp": "59", "total": 173, "pct_esp": 54.3, "gmv": 232018.18, "delta_tr": 1.18}], "cias": ["LATAM", "GOL", "AZUL", "Outros"]};
+const D = {"meta": {"today": "2026-04-13", "same_dlw": "2026-04-06", "period_start": "2026-01-01", "period_end": "2026-04-13", "generated_at": "13/04/2026 15:30"}, "painel": {"hoje": {"total": 134, "cnt_esp": 96, "pct_esp": 71.6, "gmv": 182823.1, "receita": 29001.82, "take_rate": 7.67, "take_rate_pub": 8.61, "delta_tr": -0.94, "rec_incr": 23816.06, "incentivo_excl": 6137.21}, "sem_ant": {"total": 408, "cnt_esp": 264, "pct_esp": 64.7, "gmv": 377309.52, "receita": 50631.69, "take_rate": 5.69, "take_rate_pub": 7.32, "delta_tr": -1.63, "rec_incr": 30660.9, "incentivo_excl": 12243.92}, "media7d": {"total": 367.43, "cnt_esp": 242.86, "pct_esp": 9.44, "gmv": 390435.45, "receita": 56264.06, "take_rate": 1.03, "take_rate_pub": 1.1, "delta_tr": -0.07, "rec_incr": 38480.1, "incentivo_excl": 12928.21}, "periodo": {"total": 36933, "cnt_esp": 21632, "pct_esp": 58.6, "gmv": 32656981.58, "receita": 4130699.49, "take_rate": 8.35, "take_rate_pub": 7.26, "delta_tr": 1.08, "rec_incr": 2117901.01, "incentivo_excl": 1023759.87}}, "daily": [{"date": "2026-01-01", "total": 409, "pct_esp": 63.3, "gmv": 433246.42, "receita": 62224.22, "delta_tr": 0.57}, {"date": "2026-01-02", "total": 538, "pct_esp": 61.7, "gmv": 521781.13, "receita": 73177.64, "delta_tr": 0.2}, {"date": "2026-01-03", "total": 495, "pct_esp": 60.0, "gmv": 552772.37, "receita": 83150.19, "delta_tr": 1.4}, {"date": "2026-01-04", "total": 377, "pct_esp": 59.4, "gmv": 368939.65, "receita": 56503.06, "delta_tr": 2.05}, {"date": "2026-01-05", "total": 539, "pct_esp": 62.3, "gmv": 576777.22, "receita": 73851.43, "delta_tr": 0.41}, {"date": "2026-01-06", "total": 428, "pct_esp": 59.8, "gmv": 454801.44, "receita": 55437.31, "delta_tr": -1.02}, {"date": "2026-01-07", "total": 402, "pct_esp": 67.2, "gmv": 420989.06, "receita": 51459.27, "delta_tr": -0.54}, {"date": "2026-01-08", "total": 591, "pct_esp": 61.3, "gmv": 543444.5, "receita": 63119.35, "delta_tr": -2.17}, {"date": "2026-01-09", "total": 696, "pct_esp": 61.6, "gmv": 661964.25, "receita": 80942.68, "delta_tr": -1.55}, {"date": "2026-01-10", "total": 574, "pct_esp": 60.5, "gmv": 529486.18, "receita": 62495.72, "delta_tr": -1.21}, {"date": "2026-01-11", "total": 560, "pct_esp": 57.0, "gmv": 459517.04, "receita": 55759.86, "delta_tr": -1.25}, {"date": "2026-01-12", "total": 376, "pct_esp": 58.5, "gmv": 307719.43, "receita": 38071.39, "delta_tr": -0.41}, {"date": "2026-01-13", "total": 358, "pct_esp": 62.8, "gmv": 287793.92, "receita": 35430.02, "delta_tr": 3.0}, {"date": "2026-01-14", "total": 471, "pct_esp": 64.1, "gmv": 475474.65, "receita": 54971.55, "delta_tr": 0.9}, {"date": "2026-01-15", "total": 487, "pct_esp": 60.8, "gmv": 432868.07, "receita": 49424.57, "delta_tr": 1.85}, {"date": "2026-01-16", "total": 438, "pct_esp": 57.3, "gmv": 339267.04, "receita": 43828.28, "delta_tr": 2.57}, {"date": "2026-01-17", "total": 430, "pct_esp": 58.1, "gmv": 348769.93, "receita": 42394.73, "delta_tr": 1.47}, {"date": "2026-01-18", "total": 368, "pct_esp": 55.2, "gmv": 258397.5, "receita": 32116.42, "delta_tr": 2.72}, {"date": "2026-01-19", "total": 376, "pct_esp": 54.8, "gmv": 320234.68, "receita": 38773.67, "delta_tr": 2.46}, {"date": "2026-01-20", "total": 443, "pct_esp": 57.8, "gmv": 385546.99, "receita": 46289.51, "delta_tr": 1.09}, {"date": "2026-01-21", "total": 314, "pct_esp": 51.9, "gmv": 229447.24, "receita": 26946.59, "delta_tr": 1.55}, {"date": "2026-01-22", "total": 364, "pct_esp": 56.9, "gmv": 342658.88, "receita": 38739.5, "delta_tr": 2.1}, {"date": "2026-01-23", "total": 311, "pct_esp": 47.6, "gmv": 186268.1, "receita": 20766.09, "delta_tr": 1.27}, {"date": "2026-01-24", "total": 244, "pct_esp": 55.7, "gmv": 203757.25, "receita": 22518.46, "delta_tr": 1.37}, {"date": "2026-01-25", "total": 290, "pct_esp": 54.8, "gmv": 236284.09, "receita": 26385.69, "delta_tr": 2.3}, {"date": "2026-01-26", "total": 352, "pct_esp": 61.1, "gmv": 333352.93, "receita": 35301.53, "delta_tr": 0.37}, {"date": "2026-01-27", "total": 372, "pct_esp": 65.3, "gmv": 353702.08, "receita": 38863.17, "delta_tr": 0.68}, {"date": "2026-01-28", "total": 362, "pct_esp": 68.8, "gmv": 378096.49, "receita": 40290.35, "delta_tr": 0.81}, {"date": "2026-01-29", "total": 298, "pct_esp": 65.1, "gmv": 318998.57, "receita": 35512.97, "delta_tr": 0.54}, {"date": "2026-01-30", "total": 284, "pct_esp": 62.3, "gmv": 305389.12, "receita": 34681.35, "delta_tr": 1.13}, {"date": "2026-01-31", "total": 246, "pct_esp": 62.2, "gmv": 216079.0, "receita": 24876.04, "delta_tr": 0.32}, {"date": "2026-02-01", "total": 188, "pct_esp": 59.6, "gmv": 191620.32, "receita": 24472.86, "delta_tr": 2.99}, {"date": "2026-02-02", "total": 335, "pct_esp": 61.2, "gmv": 362497.24, "receita": 46815.58, "delta_tr": 2.99}, {"date": "2026-02-03", "total": 256, "pct_esp": 60.9, "gmv": 237954.88, "receita": 32110.58, "delta_tr": 1.76}, {"date": "2026-02-04", "total": 292, "pct_esp": 62.7, "gmv": 276885.85, "receita": 35365.24, "delta_tr": 3.48}, {"date": "2026-02-05", "total": 333, "pct_esp": 63.7, "gmv": 279714.62, "receita": 33991.9, "delta_tr": 1.97}, {"date": "2026-02-06", "total": 331, "pct_esp": 56.8, "gmv": 256995.15, "receita": 32930.05, "delta_tr": 3.43}, {"date": "2026-02-07", "total": 302, "pct_esp": 64.2, "gmv": 245598.94, "receita": 30164.71, "delta_tr": 2.67}, {"date": "2026-02-08", "total": 305, "pct_esp": 65.2, "gmv": 319624.64, "receita": 40994.6, "delta_tr": 2.72}, {"date": "2026-02-09", "total": 254, "pct_esp": 60.6, "gmv": 172553.21, "receita": 21262.05, "delta_tr": 0.96}, {"date": "2026-02-10", "total": 352, "pct_esp": 57.4, "gmv": 308327.93, "receita": 37053.26, "delta_tr": 1.03}, {"date": "2026-02-11", "total": 292, "pct_esp": 57.2, "gmv": 261628.22, "receita": 30788.68, "delta_tr": 0.55}, {"date": "2026-02-12", "total": 348, "pct_esp": 60.9, "gmv": 302208.81, "receita": 35273.06, "delta_tr": 0.85}, {"date": "2026-02-13", "total": 330, "pct_esp": 69.1, "gmv": 330560.89, "receita": 40816.08, "delta_tr": -1.77}, {"date": "2026-02-14", "total": 277, "pct_esp": 57.4, "gmv": 270003.35, "receita": 34901.31, "delta_tr": -2.42}, {"date": "2026-02-15", "total": 335, "pct_esp": 64.2, "gmv": 310708.03, "receita": 39958.0, "delta_tr": -2.22}, {"date": "2026-02-16", "total": 395, "pct_esp": 64.1, "gmv": 466619.2, "receita": 59877.49, "delta_tr": -2.14}, {"date": "2026-02-17", "total": 365, "pct_esp": 59.5, "gmv": 270905.47, "receita": 32666.23, "delta_tr": -1.95}, {"date": "2026-02-18", "total": 380, "pct_esp": 65.5, "gmv": 336525.66, "receita": 41317.73, "delta_tr": -2.2}, {"date": "2026-02-19", "total": 516, "pct_esp": 60.3, "gmv": 493779.34, "receita": 62155.4, "delta_tr": -2.01}, {"date": "2026-02-20", "total": 345, "pct_esp": 62.6, "gmv": 345013.34, "receita": 46479.75, "delta_tr": 1.19}, {"date": "2026-02-21", "total": 242, "pct_esp": 50.0, "gmv": 207751.48, "receita": 28966.92, "delta_tr": 3.33}, {"date": "2026-02-22", "total": 263, "pct_esp": 54.8, "gmv": 192755.56, "receita": 26758.01, "delta_tr": 4.08}, {"date": "2026-02-23", "total": 363, "pct_esp": 60.1, "gmv": 274043.65, "receita": 36182.52, "delta_tr": 6.05}, {"date": "2026-02-24", "total": 213, "pct_esp": 58.2, "gmv": 203913.38, "receita": 27342.19, "delta_tr": 6.64}, {"date": "2026-02-25", "total": 397, "pct_esp": 52.1, "gmv": 269912.03, "receita": 33188.4, "delta_tr": 5.71}, {"date": "2026-02-26", "total": 335, "pct_esp": 57.6, "gmv": 232808.72, "receita": 27507.51, "delta_tr": 5.58}, {"date": "2026-02-27", "total": 347, "pct_esp": 62.8, "gmv": 321266.43, "receita": 38919.43, "delta_tr": 2.77}, {"date": "2026-02-28", "total": 300, "pct_esp": 61.7, "gmv": 253895.75, "receita": 31182.84, "delta_tr": 3.2}, {"date": "2026-03-01", "total": 301, "pct_esp": 50.5, "gmv": 195667.28, "receita": 24602.91, "delta_tr": 2.51}, {"date": "2026-03-02", "total": 371, "pct_esp": 59.0, "gmv": 285669.58, "receita": 36046.51, "delta_tr": 0.58}, {"date": "2026-03-03", "total": 429, "pct_esp": 56.9, "gmv": 340049.31, "receita": 41049.19, "delta_tr": 2.47}, {"date": "2026-03-04", "total": 334, "pct_esp": 60.5, "gmv": 260851.29, "receita": 30802.46, "delta_tr": 0.7}, {"date": "2026-03-05", "total": 341, "pct_esp": 51.3, "gmv": 247394.42, "receita": 28087.21, "delta_tr": 1.81}, {"date": "2026-03-06", "total": 343, "pct_esp": 47.8, "gmv": 237484.55, "receita": 27348.45, "delta_tr": 2.57}, {"date": "2026-03-07", "total": 280, "pct_esp": 50.7, "gmv": 233596.04, "receita": 29042.93, "delta_tr": 2.61}, {"date": "2026-03-08", "total": 241, "pct_esp": 45.2, "gmv": 160802.29, "receita": 18883.65, "delta_tr": 3.46}, {"date": "2026-03-09", "total": 266, "pct_esp": 51.5, "gmv": 263935.0, "receita": 34032.85, "delta_tr": 2.77}, {"date": "2026-03-10", "total": 321, "pct_esp": 52.6, "gmv": 258107.23, "receita": 33528.21, "delta_tr": 2.35}, {"date": "2026-03-11", "total": 207, "pct_esp": 39.6, "gmv": 126614.18, "receita": 16533.18, "delta_tr": 2.82}, {"date": "2026-03-12", "total": 157, "pct_esp": 36.9, "gmv": 100540.06, "receita": 11885.99, "delta_tr": 1.92}, {"date": "2026-03-13", "total": 290, "pct_esp": 52.4, "gmv": 270030.99, "receita": 32247.51, "delta_tr": 1.71}, {"date": "2026-03-14", "total": 321, "pct_esp": 56.1, "gmv": 270882.74, "receita": 33514.37, "delta_tr": 2.99}, {"date": "2026-03-15", "total": 366, "pct_esp": 53.3, "gmv": 276296.42, "receita": 34301.49, "delta_tr": 2.84}, {"date": "2026-03-16", "total": 348, "pct_esp": 53.4, "gmv": 236771.48, "receita": 28568.12, "delta_tr": 2.23}, {"date": "2026-03-17", "total": 306, "pct_esp": 57.2, "gmv": 306433.37, "receita": 37759.87, "delta_tr": 2.58}, {"date": "2026-03-18", "total": 318, "pct_esp": 60.4, "gmv": 314476.15, "receita": 39443.4, "delta_tr": 1.99}, {"date": "2026-03-19", "total": 269, "pct_esp": 63.2, "gmv": 285411.6, "receita": 37088.49, "delta_tr": 1.93}, {"date": "2026-03-20", "total": 192, "pct_esp": 57.8, "gmv": 206863.64, "receita": 25968.83, "delta_tr": 2.16}, {"date": "2026-03-21", "total": 232, "pct_esp": 57.3, "gmv": 197439.35, "receita": 24701.43, "delta_tr": 2.04}, {"date": "2026-03-22", "total": 171, "pct_esp": 54.4, "gmv": 139443.18, "receita": 17732.85, "delta_tr": 3.74}, {"date": "2026-03-23", "total": 259, "pct_esp": 61.8, "gmv": 279218.19, "receita": 35852.77, "delta_tr": 2.36}, {"date": "2026-03-24", "total": 335, "pct_esp": 55.8, "gmv": 298474.78, "receita": 38501.25, "delta_tr": 1.55}, {"date": "2026-03-25", "total": 323, "pct_esp": 58.2, "gmv": 271868.53, "receita": 34282.29, "delta_tr": 1.95}, {"date": "2026-03-26", "total": 293, "pct_esp": 58.4, "gmv": 294741.6, "receita": 34845.41, "delta_tr": 1.88}, {"date": "2026-03-27", "total": 280, "pct_esp": 53.2, "gmv": 240586.34, "receita": 29729.73, "delta_tr": 1.56}, {"date": "2026-03-28", "total": 304, "pct_esp": 58.9, "gmv": 250418.63, "receita": 31608.24, "delta_tr": 1.57}, {"date": "2026-03-29", "total": 248, "pct_esp": 50.0, "gmv": 182307.0, "receita": 23749.95, "delta_tr": 2.74}, {"date": "2026-03-30", "total": 333, "pct_esp": 59.2, "gmv": 279975.2, "receita": 35401.28, "delta_tr": 3.5}, {"date": "2026-03-31", "total": 607, "pct_esp": 24.2, "gmv": 199198.82, "receita": 24296.6, "delta_tr": 3.79}, {"date": "2026-04-01", "total": 610, "pct_esp": 32.1, "gmv": 263414.95, "receita": 39685.66, "delta_tr": 3.68}, {"date": "2026-04-02", "total": 528, "pct_esp": 69.7, "gmv": 543097.88, "receita": 70782.84, "delta_tr": -2.6}, {"date": "2026-04-03", "total": 682, "pct_esp": 62.8, "gmv": 629229.81, "receita": 81581.11, "delta_tr": -1.81}, {"date": "2026-04-04", "total": 510, "pct_esp": 63.7, "gmv": 432038.38, "receita": 57464.69, "delta_tr": -0.68}, {"date": "2026-04-05", "total": 453, "pct_esp": 62.5, "gmv": 387396.34, "receita": 51522.69, "delta_tr": -1.89}, {"date": "2026-04-06", "total": 408, "pct_esp": 64.7, "gmv": 377309.52, "receita": 50631.69, "delta_tr": -1.63}, {"date": "2026-04-07", "total": 494, "pct_esp": 66.0, "gmv": 480739.29, "receita": 64443.43, "delta_tr": -1.53}, {"date": "2026-04-08", "total": 417, "pct_esp": 67.9, "gmv": 422957.3, "receita": 62924.7, "delta_tr": -0.45}, {"date": "2026-04-09", "total": 335, "pct_esp": 67.5, "gmv": 379948.81, "receita": 51319.22, "delta_tr": -1.05}, {"date": "2026-04-10", "total": 478, "pct_esp": 65.7, "gmv": 496593.45, "receita": 68628.39, "delta_tr": -1.0}, {"date": "2026-04-11", "total": 336, "pct_esp": 62.5, "gmv": 342374.27, "receita": 52895.49, "delta_tr": 0.77}, {"date": "2026-04-12", "total": 378, "pct_esp": 64.8, "gmv": 427611.93, "receita": 64635.35, "delta_tr": 0.79}, {"date": "2026-04-13", "total": 134, "pct_esp": 71.6, "gmv": 182823.1, "receita": 29001.82, "delta_tr": -0.94}], "por_cia": {"LATAM": {"total": 9198, "cnt_esp": 5506, "pct_esp": 59.9, "gmv": 9122884.32, "receita": 1276052.11, "take_rate": 9.04, "take_rate_pub": 7.32, "delta_tr": 1.72, "rec_incr": 762045.02, "incentivo_excl": 432022.04}, "GOL": {"total": 9434, "cnt_esp": 5796, "pct_esp": 61.4, "gmv": 8453174.03, "receita": 1128616.4, "take_rate": 8.77, "take_rate_pub": 7.36, "delta_tr": 1.41, "rec_incr": 669836.01, "incentivo_excl": 371020.05}, "AZUL": {"total": 17413, "cnt_esp": 10225, "pct_esp": 58.7, "gmv": 14730608.45, "receita": 1712469.93, "take_rate": 7.78, "take_rate_pub": 7.62, "delta_tr": 0.16, "rec_incr": 820853.99, "incentivo_excl": 220717.78}, "Outros": {"total": 888, "cnt_esp": 105, "pct_esp": 11.8, "gmv": 350314.78, "receita": 13561.05, "take_rate": 3.98, "take_rate_pub": 3.31, "delta_tr": 0.67, "rec_incr": -134834.01, "incentivo_excl": 0.0}}, "bvse_cia": [{"cia": "LATAM", "total": 9198, "pct_esp": 59.9, "gmv_esp": 9122884.32, "tr_pub": 7.32, "tr_esp": 9.04, "delta_tr": 1.72}, {"cia": "GOL", "total": 9434, "pct_esp": 61.4, "gmv_esp": 8453174.03, "tr_pub": 7.36, "tr_esp": 8.77, "delta_tr": 1.41}, {"cia": "AZUL", "total": 17413, "pct_esp": 58.7, "gmv_esp": 14730608.45, "tr_pub": 7.62, "tr_esp": 7.78, "delta_tr": 0.16}, {"cia": "Outros", "total": 888, "pct_esp": 11.8, "gmv_esp": 350314.78, "tr_pub": 3.31, "tr_esp": 3.98, "delta_tr": 0.67}], "prov_cia": [{"provider": "cturis", "LATAM_cnt": 858, "LATAM_pct_esp": 48.0, "LATAM_delta_tr": -0.56, "GOL_cnt": 10, "GOL_pct_esp": 100.0, "GOL_delta_tr": null, "AZUL_cnt": 5265, "AZUL_pct_esp": 78.1, "AZUL_delta_tr": 0.25, "Outros_cnt": 120, "Outros_pct_esp": 0.0, "Outros_delta_tr": null}, {"provider": "evtur", "LATAM_cnt": 0, "LATAM_pct_esp": 0, "LATAM_delta_tr": null, "GOL_cnt": 8, "GOL_pct_esp": 100.0, "GOL_delta_tr": null, "AZUL_cnt": 0, "AZUL_pct_esp": 0, "AZUL_delta_tr": null, "Outros_cnt": 0, "Outros_pct_esp": 0, "Outros_delta_tr": null}, {"provider": "flytour", "LATAM_cnt": 1323, "LATAM_pct_esp": 88.5, "LATAM_delta_tr": -0.25, "GOL_cnt": 793, "GOL_pct_esp": 83.1, "GOL_delta_tr": 2.29, "AZUL_cnt": 1316, "AZUL_pct_esp": 87.1, "AZUL_delta_tr": 2.13, "Outros_cnt": 496, "Outros_pct_esp": 0.0, "Outros_delta_tr": null}, {"provider": "patria", "LATAM_cnt": 4940, "LATAM_pct_esp": 62.6, "LATAM_delta_tr": 2.51, "GOL_cnt": 4062, "GOL_pct_esp": 54.6, "GOL_delta_tr": 2.19, "AZUL_cnt": 4295, "AZUL_pct_esp": 38.0, "AZUL_delta_tr": 0.11, "Outros_cnt": 21, "Outros_pct_esp": 100.0, "Outros_delta_tr": null}, {"provider": "rextur", "LATAM_cnt": 56, "LATAM_pct_esp": 0.0, "LATAM_delta_tr": null, "GOL_cnt": 0, "GOL_pct_esp": 0, "GOL_delta_tr": null, "AZUL_cnt": 37, "AZUL_pct_esp": 100.0, "AZUL_delta_tr": null, "Outros_cnt": 251, "Outros_pct_esp": 33.5, "Outros_delta_tr": -0.17}, {"provider": "sakura", "LATAM_cnt": 2021, "LATAM_pct_esp": 41.1, "LATAM_delta_tr": 1.52, "GOL_cnt": 4561, "GOL_pct_esp": 63.6, "GOL_delta_tr": 0.47, "AZUL_cnt": 6500, "AZUL_pct_esp": 50.8, "AZUL_delta_tr": -0.23, "Outros_cnt": 0, "Outros_pct_esp": 0, "Outros_delta_tr": null}], "hoje_busca": [{"cia": "LATAM", "provider": "patria", "qtd": 11, "pct_cia": 91.7, "tr": 9.85}, {"cia": "LATAM", "provider": "sakura", "qtd": 1, "pct_cia": 8.3, "tr": 8.39}, {"cia": "GOL", "provider": "patria", "qtd": 10, "pct_cia": 100.0, "tr": 8.17}, {"cia": "AZUL", "provider": "patria", "qtd": 11, "pct_cia": 68.8, "tr": 8.04}, {"cia": "AZUL", "provider": "sakura", "qtd": 5, "pct_cia": 31.2, "tr": 8.05}], "hoje_emi": [{"cia": "LATAM", "provider": "patria", "tipo": "ESPECIAL", "qtd": 13, "pct_cia": 37.1, "tr": -0.6}, {"cia": "LATAM", "provider": "patria", "tipo": "PÚBLICA", "qtd": 11, "pct_cia": 31.4, "tr": 9.85}, {"cia": "LATAM", "provider": "sakura", "tipo": "ESPECIAL", "qtd": 10, "pct_cia": 28.6, "tr": 7.91}, {"cia": "LATAM", "provider": "sakura", "tipo": "PÚBLICA", "qtd": 1, "pct_cia": 2.9, "tr": 8.39}, {"cia": "GOL", "provider": "patria", "tipo": "ESPECIAL", "qtd": 1, "pct_cia": 2.3, "tr": 21.66}, {"cia": "GOL", "provider": "patria", "tipo": "PÚBLICA", "qtd": 10, "pct_cia": 22.7, "tr": 8.17}, {"cia": "GOL", "provider": "sakura", "tipo": "ESPECIAL", "qtd": 33, "pct_cia": 75.0, "tr": 7.37}, {"cia": "AZUL", "provider": "cturis", "tipo": "ESPECIAL", "qtd": 8, "pct_cia": 14.5, "tr": 10.52}, {"cia": "AZUL", "provider": "patria", "tipo": "ESPECIAL", "qtd": 2, "pct_cia": 3.6, "tr": 2.57}, {"cia": "AZUL", "provider": "patria", "tipo": "PÚBLICA", "qtd": 11, "pct_cia": 20.0, "tr": 8.04}, {"cia": "AZUL", "provider": "sakura", "tipo": "ESPECIAL", "qtd": 29, "pct_cia": 52.7, "tr": 10.72}, {"cia": "AZUL", "provider": "sakura", "tipo": "PÚBLICA", "qtd": 5, "pct_cia": 9.1, "tr": 8.05}], "cred_data": [{"provider": "cturis", "credential": "CTuris Busca (maxmilhas.wcf)", "tipo": "BUSCA", "total": 1721, "pct_esp": 0.0, "delta_tr": null, "alerta": false}, {"provider": "cturis", "credential": "CTuris CotaÃ§Ã£o (maxmilhas.wcf)", "tipo": "COTAÇÃO", "total": 4452, "pct_esp": 100.0, "delta_tr": null, "alerta": false}, {"provider": "cturis", "credential": "Wooba test Cturis Provider", "tipo": "TESTE", "total": 80, "pct_esp": 100.0, "delta_tr": null, "alerta": true}, {"provider": "evtur", "credential": "Evtur CotaÃ§Ã£o (609d24680c9b264c3063f977)", "tipo": "COTAÇÃO", "total": 8, "pct_esp": 100.0, "delta_tr": null, "alerta": false}, {"provider": "flytour", "credential": "Flytour Busca emissÃ£o faturado (max.site)", "tipo": "BUSCA", "total": 67, "pct_esp": 100.0, "delta_tr": null, "alerta": true}, {"provider": "flytour", "credential": "Flytour busca (max.site) #Nunca usar na cotaÃ§Ã£o", "tipo": "PROIBIDA", "total": 952, "pct_esp": 0.0, "delta_tr": null, "alerta": true}, {"provider": "flytour", "credential": "Flytour cotaÃ§Ã£o especial (max.flyespecial)", "tipo": "COTAÇÃO", "total": 2321, "pct_esp": 100.0, "delta_tr": null, "alerta": false}, {"provider": "flytour", "credential": "Flytour cotaÃ§Ã£o especial faturado", "tipo": "COTAÇÃO", "total": 588, "pct_esp": 100.0, "delta_tr": null, "alerta": false}, {"provider": "patria", "credential": "Patria - CotaÃ§Ã£o", "tipo": "COTAÇÃO", "total": 6960, "pct_esp": 100.0, "delta_tr": null, "alerta": false}, {"provider": "patria", "credential": "Patria Busca - MAX", "tipo": "BUSCA", "total": 6316, "pct_esp": 0.0, "delta_tr": null, "alerta": false}, {"provider": "patria", "credential": "Patria Busca - MAX - apimaxpatria", "tipo": "BUSCA", "total": 42, "pct_esp": 9.5, "delta_tr": 1.49, "alerta": true}, {"provider": "rextur", "credential": "Rextur busca (116437) #Nunca usar na cotaÃ§Ã£o", "tipo": "PROIBIDA", "total": 344, "pct_esp": 35.2, "delta_tr": 0.77, "alerta": true}, {"provider": "sakura", "credential": "Sakura - CotaÃ§Ã£o", "tipo": "COTAÇÃO", "total": 7031, "pct_esp": 100.0, "delta_tr": null, "alerta": false}, {"provider": "sakura", "credential": "Sakura - Novo Servidor", "tipo": "OUTRO", "total": 6051, "pct_esp": 0.0, "delta_tr": null, "alerta": false}], "advp_data": [{"advp": "1", "total": 1901, "pct_esp": 66.8, "gmv": 4599659.19, "delta_tr": 0.76}, {"advp": "10", "total": 1070, "pct_esp": 61.8, "gmv": 1581723.15, "delta_tr": 0.32}, {"advp": "0", "total": 1056, "pct_esp": 62.0, "gmv": 2730729.58, "delta_tr": 0.43}, {"advp": "4", "total": 998, "pct_esp": 62.7, "gmv": 2034047.16, "delta_tr": 1.34}, {"advp": "2", "total": 985, "pct_esp": 66.9, "gmv": 2368972.59, "delta_tr": 1.52}, {"advp": "7", "total": 938, "pct_esp": 61.7, "gmv": 1588875.19, "delta_tr": 0.71}, {"advp": "28", "total": 831, "pct_esp": 61.0, "gmv": 949060.78, "delta_tr": 1.5}, {"advp": "14", "total": 802, "pct_esp": 58.6, "gmv": 1210383.62, "delta_tr": 0.65}, {"advp": "21", "total": 697, "pct_esp": 57.8, "gmv": 916132.37, "delta_tr": 0.39}, {"advp": "3", "total": 678, "pct_esp": 63.7, "gmv": 1541419.88, "delta_tr": 0.51}, {"advp": "5", "total": 668, "pct_esp": 59.1, "gmv": 1295068.71, "delta_tr": 0.44}, {"advp": "8", "total": 649, "pct_esp": 63.0, "gmv": 1093201.69, "delta_tr": 1.61}, {"advp": "15", "total": 649, "pct_esp": 61.0, "gmv": 946746.4, "delta_tr": 0.69}, {"advp": "29", "total": 642, "pct_esp": 59.2, "gmv": 755332.13, "delta_tr": 1.35}, {"advp": "9", "total": 617, "pct_esp": 61.9, "gmv": 1008411.72, "delta_tr": 1.06}, {"advp": "30", "total": 597, "pct_esp": 59.8, "gmv": 683513.25, "delta_tr": 1.14}, {"advp": "6", "total": 584, "pct_esp": 59.6, "gmv": 1201799.04, "delta_tr": 1.35}, {"advp": "11", "total": 583, "pct_esp": 58.5, "gmv": 894936.25, "delta_tr": 1.16}, {"advp": "22", "total": 572, "pct_esp": 60.3, "gmv": 764943.94, "delta_tr": 1.04}, {"advp": "12", "total": 555, "pct_esp": 60.4, "gmv": 836779.6, "delta_tr": 1.18}, {"advp": "16", "total": 554, "pct_esp": 58.5, "gmv": 757690.3, "delta_tr": 0.24}, {"advp": "18", "total": 525, "pct_esp": 58.1, "gmv": 808890.22, "delta_tr": 1.1}, {"advp": "23", "total": 525, "pct_esp": 55.8, "gmv": 703211.08, "delta_tr": 1.34}, {"advp": "17", "total": 513, "pct_esp": 58.3, "gmv": 711743.29, "delta_tr": 0.63}, {"advp": "31", "total": 506, "pct_esp": 56.1, "gmv": 604195.38, "delta_tr": 1.66}, {"advp": "24", "total": 497, "pct_esp": 61.2, "gmv": 773012.61, "delta_tr": 0.8}, {"advp": "19", "total": 481, "pct_esp": 58.0, "gmv": 663118.5, "delta_tr": 0.78}, {"advp": "32", "total": 456, "pct_esp": 53.7, "gmv": 519462.18, "delta_tr": 1.1}, {"advp": "33", "total": 456, "pct_esp": 58.6, "gmv": 530826.33, "delta_tr": 0.88}, {"advp": "20", "total": 452, "pct_esp": 58.0, "gmv": 669428.82, "delta_tr": 0.98}, {"advp": "25", "total": 449, "pct_esp": 54.6, "gmv": 621341.86, "delta_tr": 1.72}, {"advp": "13", "total": 445, "pct_esp": 58.9, "gmv": 766353.65, "delta_tr": 1.09}, {"advp": "26", "total": 442, "pct_esp": 55.9, "gmv": 586424.0, "delta_tr": 0.94}, {"advp": "27", "total": 416, "pct_esp": 58.2, "gmv": 558610.15, "delta_tr": 0.44}, {"advp": "34", "total": 402, "pct_esp": 60.2, "gmv": 546343.75, "delta_tr": 1.63}, {"advp": "35", "total": 390, "pct_esp": 53.3, "gmv": 440351.0, "delta_tr": 0.15}, {"advp": "38", "total": 361, "pct_esp": 56.5, "gmv": 429446.37, "delta_tr": 0.58}, {"advp": "36", "total": 338, "pct_esp": 51.8, "gmv": 426878.8, "delta_tr": 2.08}, {"advp": "42", "total": 320, "pct_esp": 59.1, "gmv": 387303.95, "delta_tr": 1.52}, {"advp": "37", "total": 315, "pct_esp": 61.0, "gmv": 414988.73, "delta_tr": 1.56}, {"advp": "40", "total": 314, "pct_esp": 58.6, "gmv": 372652.72, "delta_tr": 0.05}, {"advp": "43", "total": 294, "pct_esp": 57.5, "gmv": 393272.56, "delta_tr": -0.14}, {"advp": "41", "total": 273, "pct_esp": 61.5, "gmv": 338233.06, "delta_tr": 1.1}, {"advp": "39", "total": 269, "pct_esp": 58.7, "gmv": 323831.35, "delta_tr": 1.98}, {"advp": "47", "total": 250, "pct_esp": 53.2, "gmv": 333457.73, "delta_tr": 1.38}, {"advp": "44", "total": 248, "pct_esp": 60.1, "gmv": 301568.89, "delta_tr": 1.93}, {"advp": "48", "total": 247, "pct_esp": 60.7, "gmv": 295358.33, "delta_tr": 0.49}, {"advp": "45", "total": 244, "pct_esp": 64.8, "gmv": 275685.97, "delta_tr": 1.39}, {"advp": "46", "total": 223, "pct_esp": 58.7, "gmv": 281643.18, "delta_tr": 0.56}, {"advp": "49", "total": 223, "pct_esp": 63.7, "gmv": 280355.29, "delta_tr": 1.47}, {"advp": "50", "total": 192, "pct_esp": 64.6, "gmv": 223507.6, "delta_tr": 0.99}, {"advp": "60", "total": 191, "pct_esp": 55.5, "gmv": 254023.99, "delta_tr": 0.6}, {"advp": "53", "total": 189, "pct_esp": 61.9, "gmv": 244352.37, "delta_tr": 1.99}, {"advp": "56", "total": 188, "pct_esp": 55.3, "gmv": 255895.57, "delta_tr": 1.23}, {"advp": "54", "total": 185, "pct_esp": 50.8, "gmv": 249137.44, "delta_tr": 1.6}, {"advp": "51", "total": 184, "pct_esp": 53.3, "gmv": 241674.16, "delta_tr": 2.19}, {"advp": "52", "total": 176, "pct_esp": 53.4, "gmv": 245445.12, "delta_tr": 0.63}, {"advp": "57", "total": 174, "pct_esp": 60.9, "gmv": 215001.89, "delta_tr": 0.7}, {"advp": "58", "total": 174, "pct_esp": 59.2, "gmv": 257062.01, "delta_tr": 1.22}, {"advp": "59", "total": 173, "pct_esp": 54.3, "gmv": 232018.18, "delta_tr": 1.18}], "cias": ["LATAM", "GOL", "AZUL", "Outros"]};
 
 // ============================================================
 // HELPERS
@@ -410,6 +2011,106 @@ function ciaColor(cia) {
 // ============================================================
 // FILTER
 // ============================================================
+
+// ============================================================
+// FILTRO DE DATAS
+// ⚠️  NÃO afeta: renderPainel (Hoje/Sem.Ant/Média7d) e renderHoje
+//     Afeta: renderTemporal, renderBVSE, renderPorCia (só abas históricas)
+// ============================================================
+let dateFrom = null;
+let dateTo   = null;
+
+/** Retorna apenas os dias de D.daily dentro do intervalo selecionado */
+function getFilteredDaily() {
+  if (!dateFrom && !dateTo) return D.daily;
+  return D.daily.filter(d => {
+    if (dateFrom && d.date < dateFrom) return false;
+    if (dateTo   && d.date > dateTo)   return false;
+    return true;
+  });
+}
+
+/** Aplica o filtro vindo dos inputs manuais de data */
+function applyDateFilter() {
+  dateFrom = document.getElementById('date-from').value || null;
+  dateTo   = document.getElementById('date-to').value   || null;
+  // Limpa destaque dos botões de preset
+  ['all','7d','14d','30d','mes'].forEach(id => {
+    const b = document.getElementById('btn-' + id);
+    if (b) b.classList.remove('active');
+  });
+  _refreshFilteredTabs();
+}
+
+/** Define um preset de período */
+function setDatePreset(preset) {
+  const allDates = D.daily.map(d => d.date).sort();
+  const maxDate  = allDates[allDates.length - 1];
+
+  // Ativa só o botão correto
+  ['all','7d','14d','30d','mes'].forEach(id => {
+    const b = document.getElementById('btn-' + id);
+    if (b) b.classList.toggle('active', id === preset);
+  });
+
+  if (preset === 'all') {
+    dateFrom = null; dateTo = null;
+    document.getElementById('date-from').value = '';
+    document.getElementById('date-to').value   = '';
+  } else {
+    const days = { '7d': 6, '14d': 13, '30d': 29 };
+    if (preset in days) {
+      const d = new Date(maxDate);
+      d.setDate(d.getDate() - days[preset]);
+      dateFrom = d.toISOString().slice(0, 10);
+      dateTo   = maxDate;
+    } else if (preset === 'mes') {
+      const d = new Date(maxDate);
+      dateFrom = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-01';
+      dateTo   = maxDate;
+    }
+    document.getElementById('date-from').value = dateFrom;
+    document.getElementById('date-to').value   = dateTo;
+  }
+
+  _refreshFilteredTabs();
+}
+
+/** Re-renderiza apenas as abas que dependem do intervalo histórico */
+function _refreshFilteredTabs() {
+  _updateDateBadge();
+  renderTemporal();   // Δ Temporal usa getFilteredDaily()
+  renderBVSE();       // Busca vs Emissão usa getFilteredDaily()
+  renderPorCia();     // Por CIA
+  renderProv();       // Provider & Credencial
+  renderADVP();       // ADVPs
+  // renderPainel() e renderHoje() NÃO são chamados — preservam Hoje/Sem.Ant/Média7d intactos
+}
+
+/** Atualiza o badge com o resumo do período filtrado */
+function _updateDateBadge() {
+  const badge = document.getElementById('date-badge');
+  if (!badge) return;
+  const daily = getFilteredDaily();
+  if (!daily.length) { badge.textContent = 'Sem dados no período'; return; }
+  const from  = daily[0].date;
+  const to    = daily[daily.length - 1].date;
+  const total = daily.reduce((s, d) => s + d.total, 0);
+  badge.textContent = from + ' → ' + to + ' | ' + total.toLocaleString('pt-BR') + ' emissões';
+}
+
+/** Inicializa o filtro de datas com os limites do dataset */
+function initDateFilter() {
+  const allDates = D.daily.map(d => d.date).sort();
+  const minDate  = allDates[0];
+  const maxDate  = allDates[allDates.length - 1];
+  const dtFrom   = document.getElementById('date-from');
+  const dtTo     = document.getElementById('date-to');
+  if (dtFrom) { dtFrom.min = minDate; dtFrom.max = maxDate; }
+  if (dtTo)   { dtTo.min   = minDate; dtTo.max   = maxDate; }
+  _updateDateBadge();
+}
+
 function setCia(cia) {
   currentCia = cia;
   document.querySelectorAll('.filter-btn').forEach(b => {
@@ -586,7 +2287,7 @@ function renderHoje() {
 // DELTA TEMPORAL
 // ============================================================
 function renderTemporal() {
-  const daily = D.daily;
+  const daily = getFilteredDaily();
   const labels = daily.map(d => d.date.slice(5));
   const colors = daily.map(d => d.delta_tr == null ? '#94a3b8' : d.delta_tr >= 2 ? '#22c55e' : d.delta_tr >= 0 ? '#eab308' : '#ef4444');
 
@@ -657,12 +2358,18 @@ function renderTemporal() {
 // BUSCA VS EMISSÃO
 // ============================================================
 function renderBVSE() {
-  const p = D.painel.periodo;
-  document.getElementById('bvse-total').textContent = fmtNum(p.total);
-  document.getElementById('bvse-esp').textContent = fmtNum(p.cnt_esp);
-  document.getElementById('bvse-esp-pct').textContent = fmtPct(p.pct_esp) + ' das emissões';
-  document.getElementById('bvse-gmv').textContent = fmtBRL(p.gmv);
-  document.getElementById('bvse-rec').textContent = fmtBRL(p.rec_incr);
+  // KPIs de topo refletem o período filtrado
+  const filteredDaily = getFilteredDaily();
+  const totalFilt  = filteredDaily.reduce((s, d) => s + d.total, 0);
+  const espFilt    = filteredDaily.reduce((s, d) => s + Math.round(d.total * d.pct_esp / 100), 0);
+  const pctEspFilt = totalFilt > 0 ? (espFilt / totalFilt * 100).toFixed(1) * 1 : 0;
+  const gmvFilt    = filteredDaily.reduce((s, d) => s + (d.gmv || 0), 0);
+  const recFilt    = filteredDaily.reduce((s, d) => s + (d.receita || 0), 0);
+  document.getElementById('bvse-total').textContent = fmtNum(totalFilt);
+  document.getElementById('bvse-esp').textContent = fmtNum(espFilt);
+  document.getElementById('bvse-esp-pct').textContent = fmtPct(pctEspFilt) + ' das emissões';
+  document.getElementById('bvse-gmv').textContent = fmtBRL(gmvFilt);
+  document.getElementById('bvse-rec').textContent = fmtBRL(recFilt);
 
   // Por CIA
   const rows = D.bvse_cia.filter(r => currentCia === 'Todas' || r.cia === currentCia);
@@ -924,6 +2631,8 @@ function renderAll() {
 }
 
 renderAll();
+initDateFilter();
 </script>
-</body>
-</html>
+
+
+</body></html>
